@@ -39,7 +39,7 @@ def decode(txt):
     return txt
 
 def encode_list(lst):
-    return [encode]
+    return [encode(e) for e in lst]
 
 cdef class PyAutomaton:
     cdef Automaton* cpp_automaton
@@ -50,11 +50,11 @@ cdef class PyAutomaton:
     def __dealloc__(self):
         del self.cpp_automaton
 
-    def add(self, pattern, value):
-        self.cpp_automaton.add(pattern, value)
+    def add(self, pattern, value='Y'):
+        self.cpp_automaton.add(encode_list(pattern), encode(value))
 
     def has_pattern(self, pattern):
-        return self.cpp_automaton.has_pattern(pattern)
+        return self.cpp_automaton.has_pattern(encode_list(pattern))
 
     def has_prefix(self, prefix):
         return self.cpp_automaton.has_prefix(prefix)
@@ -63,7 +63,7 @@ cdef class PyAutomaton:
         matches = self.cpp_automaton.get_matches(text, exclude_overlaps)
         result = [None]*matches.size()
         for i in range(matches.size()):
-            result[i] = dict(start=matches[i].get_start(), end=matches[i].get_end(), label=matches[i].get_label())
+            result[i] = dict(start=matches[i].get_start(), end=matches[i].get_end(), label=decode(matches[i].get_label()))
         return result
 
     def __str__(self):
