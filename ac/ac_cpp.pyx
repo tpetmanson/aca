@@ -30,7 +30,7 @@ def normalize_unicode(text):
 
 def encode(txt):
     if isinstance(txt, str):
-        return txt.encode('utf-8')
+        return normalize_unicode(txt).encode('utf-8')
     return txt
 
 def decode(txt):
@@ -57,7 +57,7 @@ cdef class PyAutomaton:
         return self.cpp_automaton.has_pattern(encode_list(pattern))
 
     def has_prefix(self, prefix):
-        return self.cpp_automaton.has_prefix(prefix)
+        return self.cpp_automaton.has_prefix(encode_list(prefix))
 
     def get_matches(self, text, exclude_overlaps=True):
         matches = self.cpp_automaton.get_matches(text, exclude_overlaps)

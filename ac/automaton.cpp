@@ -74,7 +74,7 @@ bool Automaton::has_pattern(const StringVector& pattern) const {
 
 bool Automaton::has_prefix(const StringVector& prefix) const {
     NodePtr node = find_node(prefix);
-    return !node;
+    return node != NULL;
 }
 
 std::string Automaton::get_value(const StringVector& pattern) const {
@@ -90,7 +90,7 @@ NodePtr Automaton::goto_node(const int node_id, const std::string& elem) {
     } else if (node_id == 0) {
         return this->root;
     }
-    return std::shared_ptr<Node>(NULL);
+    return NodePtr();
 }
 
 void Automaton::update_automaton() {
