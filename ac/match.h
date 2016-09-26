@@ -33,6 +33,7 @@ public:
 
     int get_start() const { return start; }
     int get_end() const { return end; }
+    std::string get_label() const { return label; }
 
     bool is_before(const Match& m) const;
     bool operator==(const Match& m) const;
