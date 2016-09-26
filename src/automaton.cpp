@@ -1,12 +1,15 @@
 /**
  * Aho-Corasick keyword tree + automaton implementation
  */
+#include <iostream>
 #include <string>
 #include <sstream>
 #include <vector>
+#include <deque>
 #include <unordered_map>
 #include <set>
 #include <functional>
+#include <algorithm>
 #include <memory>
 
 typedef std::vector<std::string> StringVector;
@@ -68,7 +71,7 @@ std::string Match::str() const {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // NODE
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+class Automaton;
 
 class Node {
 private:
@@ -91,6 +94,8 @@ public:
     bool operator==(const Node& n) const;
 
     std::string str() const;
+
+    friend class Automaton;
 };
 
 Node::Node(const int node_id, const int depth) : node_id(node_id), depth(depth), value("") { }
@@ -151,6 +156,8 @@ private:
     std::vector<NodePtr> nodes;
     std::vector<int> fail_table;
     bool uptodate;
+protected:
+    NodePtr goto_node(const int node_id, const std::string& elem);
 public:
     Automaton();
 
@@ -166,11 +173,55 @@ public:
     // check if automaton contains the prefix.
     bool has_prefix(const StringVector& prefix) const;
 
+    void update_automaton();
+
     // get the value of specified key.
     std::string get_value(const StringVector& pattern) const;
 
     std::string str() const;
 };
+
+
+NodePtr Automaton::goto_node(const int node_id, const std::string& elem) {
+    NodePtr node = this->nodes[node_id];
+    auto iter = node->outs.find(elem);
+    if (iter != node->outs.end()) {
+        return iter->second;
+    } else if (node_id == 0) {
+        return this->root;
+    }
+    return std::shared_ptr<Node>(NULL);
+}
+
+void Automaton::update_automaton() {
+    std::vector<int> fail_table(nodes.size(), 0);
+    NodePtr root = this->root;
+    std::deque<int> Q;
+    for (auto iter = root->outs.begin() ; iter != root->outs.end() ; ++iter) {
+        Q.push_back(iter->second->node_id);
+    }
+    while (Q.size() > 0) {
+        int node_id = Q[0]; Q.pop_front();
+        std::cout << "processing node " << node_id << "\n";
+        NodePtr node = nodes[node_id];
+        for (auto iter=node->outs.begin() ; iter != node->outs.end() ; ++iter) {
+            auto dest_node = iter->second;
+            std::cout << "    dest node id " << dest_node->node_id << "\n";
+            Q.push_back(dest_node->node_id);
+            int fail_node_id = fail_table[node_id];
+            while (goto_node(fail_node_id, iter->first) != NULL) {
+                fail_node_id = fail_table[fail_node_id];
+            }
+            NodePtr fail_node = nodes[fail_table[dest_node->node_id]];
+            dest_node->matches.reserve(dest_node->matches.size() + fail_node->matches.size());
+            std::copy(fail_node->matches.begin(), fail_node->matches.end(), std::back_inserter(dest_node->matches));
+        }
+    }
+    this->fail_table = fail_table;
+    this->uptodate = true;
+}
+
+
 
 Automaton::Automaton() : uptodate(false) {
     root = std::make_shared<Node>(0, -1);
@@ -230,8 +281,6 @@ std::string Automaton::get_value(const StringVector& pattern) const {
 std::string Automaton::str() const {
     return root->str();
 }
-
-#include <iostream>
 
 int main() {
     Automaton automaton;
