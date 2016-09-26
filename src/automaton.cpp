@@ -17,6 +17,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 #include "automaton.h"
+#include "match.h"
+#include "node.h"
+
+#include <iostream>
+#include <algorithm>
+#include <deque>
 
 BEGIN_NAMESPACE(ac)
 
@@ -152,5 +158,4 @@ std::string Automaton::str() const {
     return root->str();
 }
 
-END_BEGIN_NAMESPACE
-
+END_NAMESPACE

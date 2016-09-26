@@ -41,6 +41,10 @@ public:
     std::string str() const;
 };
 
+
+MatchVector remove_overlaps(MatchVector matches);
+
+
 END_NAMESPACE
 
 #endif

@@ -20,6 +20,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define AC__AUTOMATON_H
 
 #include "ac.h"
+#include <set>
+
+BEGIN_NAMESPACE(ac)
 
 class Automaton {
 private:
@@ -55,5 +58,7 @@ public:
 
     std::string str() const;
 };
+
+END_NAMESPACE
 
 #endif

@@ -48,13 +48,17 @@ bool Node::operator==(const Node& n) const {
     return node_id == n.node_id;
 }
 
-namespace std {
-    template <> struct hash<Node> {
-        size_t operator()(const Node& node) const {
-            return static_cast<size_t>(node.get_id());
-        }
-    };
-}
+END_NAMESPACE
+
+BEGIN_NAMESPACE(std)
+template <> struct hash<ac::Node> {
+    size_t operator()(const ac::Node& node) const {
+        return static_cast<size_t>(node.get_id());
+    }
+};
+END_NAMESPACE
+
+BEGIN_NAMESPACE(ac)
 
 std::string Node::str() const {
     std::stringstream ss;

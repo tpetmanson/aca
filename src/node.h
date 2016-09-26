@@ -48,6 +48,6 @@ public:
     friend class Automaton;
 };
 
-END_NAMESPACE;
+END_NAMESPACE
 
 #endif
