@@ -1,263 +1,24 @@
-/**
- * Aho-Corasick keyword tree + automaton implementation
- */
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <deque>
-#include <unordered_map>
-#include <set>
-#include <functional>
-#include <algorithm>
-#include <memory>
+/*
+Aho-Corasick keyword tree + automaton implementation for Python.
+Copyright (C) 2016 Timo Petmanson ( tpetmanson@gmail.com )
 
-#define AC_DEBUG    1
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-class Node;
-typedef std::shared_ptr<Node> NodePtr;
-class Match;
-typedef std::vector<Match> MatchVector;
-typedef std::vector<std::string> StringVector;
-typedef std::vector<int> IntVector;
-typedef std::vector<NodePtr> NodeVector;
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Match
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
+*/
+#include "automaton.h"
 
-class Match {
-private:
-    int start, end;
-    std::string label;
-public:
-    Match(const int start, const int end, const std::string& label);
-    Match(const int start, const int end, const char* label);
-
-    int get_start() const { return start; }
-    int get_end() const { return end; }
-
-    bool is_before(const Match& m) const;
-    bool operator==(const Match& m) const;
-    bool operator<(const Match& m) const;
-    size_t size() const;
-    std::string str() const;
-};
-
-Match::Match(const int start, const int end, const std::string& label) : start(start), end(end), label(label) { }
-Match::Match(const int start, const int end, const char* label) : start(start), end(end), label(label) { }
-
-bool Match::operator==(const Match& m) const {
-    return start == m.start && end == m.end;
-}
-
-bool Match::is_before(const Match& m) const {
-    return end <= m.start;
-}
-
-bool Match::operator<(const Match& m) const {
-    if (start == m.start) {
-        return end < m.end;
-    }
-    return start < m.start;
-}
-
-size_t Match::size() const {
-    return end - start;
-}
-
-std::string Match::str() const {
-    std::stringstream ss;
-    ss << "Match(" << start << ", " << end << ", " << label << ")";
-    return ss.str();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// REMOVE OVERLAPS
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-MatchVector remove_overlaps(MatchVector matches) {
-    if (matches.size() == 0) {
-        return matches;
-    }
-    // sort the matches
-    std::sort(matches.begin(), matches.end(), [](const Match& a, const Match& b) {
-        if (a.get_start() == b.get_start()) {
-            return a.get_end() < b.get_end();
-        }
-        return a.get_start() < b.get_start();
-    });
-    // compute the lengths
-    IntVector lengths(matches.size(), 0);
-    std::transform(matches.begin(), matches.end(), lengths.begin(), [](const Match& m) {
-        return m.size();
-    });
-    IntVector scores = lengths;
-    IntVector prev(scores.size(), -1);
-    int highscore = -1;
-    int highpos = -1;
-    for (int i=1 ; i<matches.size() ; ++i) {
-        int bestscore = -1;
-        int bestprev = -1;
-        int j = i;
-        while (j >= 0) {
-            // if spans do not overlap
-            if (matches[j].is_before(matches[i])) {
-                int l = scores[j] + lengths[i];
-                if (l >= bestscore) {
-                   bestscore = l;
-                   bestprev = j;
-                } else {
-                    // in case of overlapping matches
-                    l = scores[j] - lengths[j] + lengths[i];
-                    if (l >= bestscore) {
-                        bestscore = l;
-                        bestprev = prev[j];
-                    }
-                }
-            }
-            j -= 1;
-        }
-        scores[i] = bestscore;
-        prev[i] = bestprev;
-        if (bestscore >= highscore) {
-            highscore = bestscore;
-            highpos = i;
-        }
-    }
-    // back-track non-overlappng spans that we should keep
-    IntVector keep;
-    while (highpos != -1) {
-        keep.push_back(highpos);
-        highpos = prev[highpos];
-    }
-    // create new output array
-    MatchVector result;
-    result.reserve(keep.size());
-    for (auto iter=keep.rbegin() ; iter != keep.rend() ; ++iter) {
-        result.push_back(matches[*iter]);
-    }
-    return result;
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// NODE
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class Automaton;
-
-class Node {
-private:
-    int node_id, depth;
-    std::string value;
-    std::unordered_map<std::string, NodePtr> outs;
-    NodeVector matches;
-public:
-    Node(const int node_id, const int depth);
-    Node(const int node_id, const int depth, const std::string& value);
-
-    int get_id() const { return node_id; }
-    int get_depth() const { return depth; }
-    void set_value(const std::string& value) { this->value = value; }
-    std::string get_value() const { return value; }
-    NodePtr get_outnode(const std::string& key) const;
-    void set_outnode(const std::string& key, const NodePtr value);
-    void add_match(const NodePtr node);
-
-    bool operator==(const Node& n) const;
-
-    std::string str() const;
-
-    friend class Automaton;
-};
-
-Node::Node(const int node_id, const int depth) : node_id(node_id), depth(depth), value("") { }
-
-Node::Node(const int node_id, const int depth, const std::string& value) : node_id(node_id), depth(depth), value(value) { }
-
-NodePtr Node::get_outnode(const std::string& key) const {
-    auto iter = outs.find(key);
-    if (iter != outs.end()) {
-        return iter->second;
-    }
-    return NodePtr();
-}
-
-void Node::set_outnode(const std::string& key, const NodePtr value) {
-    outs[key] = value;
-}
-
-void Node::add_match(const NodePtr node) {
-    matches.push_back(node);
-}
-
-bool Node::operator==(const Node& n) const {
-    return node_id == n.node_id;
-}
-
-namespace std {
-    template <> struct hash<Node> {
-        size_t operator()(const Node& node) const {
-            return static_cast<size_t>(node.get_id());
-        }
-    };
-}
-
-std::string Node::str() const {
-    std::stringstream ss;
-    std::string indent;
-    for (int i=0 ; i<depth+1 ; ++i) indent += "  ";
-    ss << indent << "VALUE: <" << value << ">\n";
-    for (auto iter=outs.begin() ; iter != outs.end() ; ++iter) {
-        ss << indent << iter->first << "\n";
-        ss << iter->second->str();
-    }
-    return ss.str();
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// AUTOMATON
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * Aho-Corasick keyword tree + automaton implementation.
- */
-class Automaton {
-private:
-    NodePtr root;
-    std::set<std::string> alphabet;
-    NodeVector nodes;
-    IntVector fail_table;
-    bool uptodate;
-protected:
-    NodePtr goto_node(const int node_id, const std::string& elem);
-public:
-    Automaton();
-
-    // add a new pattern (key) and associate it with a value
-    void add(const StringVector& pattern, const std::string& value);
-
-    // given a prefix pattern, find the node that represents it
-    NodePtr find_node(const StringVector& prefix) const;
-
-    // check if automaton contains the full pattern.
-    bool has_pattern(const StringVector& pattern) const;
-
-    // check if automaton contains the prefix.
-    bool has_prefix(const StringVector& prefix) const;
-
-    // rebuild the automaton
-    void update_automaton();
-
-    MatchVector get_matches(const StringVector& text, bool exclude_overlaps=true);
-
-    // get the value of specified key.
-    std::string get_value(const StringVector& pattern) const;
-
-    std::string str() const;
-};
-
+BEGIN_NAMESPACE(ac)
 
 Automaton::Automaton() : uptodate(false) {
     root = std::make_shared<Node>(0, -1);
@@ -391,26 +152,5 @@ std::string Automaton::str() const {
     return root->str();
 }
 
+END_BEGIN_NAMESPACE
 
-int main() {
-    Automaton automaton;
-    StringVector vec1 = {"h", "e"};
-    StringVector vec2 = {"s", "h", "e"};
-    StringVector vec3 = {"h", "e", "r"};
-    StringVector vec4 = {"u", "s"};
-    StringVector text = {"u", "s", "h", "e", "r"};
-    std::string val = "PER";
-
-    automaton.add(vec1, val);
-    automaton.add(vec2, val);
-    automaton.add(vec3, val);
-    automaton.add(vec4, val);
-
-    automaton.update_automaton();
-
-    auto matches = automaton.get_matches(text);
-    for (auto match : matches) {
-        std::cout << match.str() << "\n";
-    }
-    return 0;
-}
