@@ -1,8 +1,4 @@
-from ac import PyAutomaton
-
-
-def match(start, end, label=True):
-    return Match(start, end, label)
+from ac import Automaton, Match
 
 
 def test_automaton_with_words():
@@ -10,10 +6,10 @@ def test_automaton_with_words():
     for token in ['he', 'she', 'his', 'hers']:
         auto.add(token)
 
-    expected_all_matches = [match(1, 4), match(2, 4), match(2, 6)]
-    all_matches = list(sorted(auto.iter_matches('ushers')))
+    expected_all_matches = [Match(1, 4, 'Y'), Match(2, 4, 'Y'), Match(2, 6, 'Y')]
+    all_matches = auto.get_matches('ushers', exclude_overlaps=False)
     assert expected_all_matches == all_matches
 
-    expected_nonoverlap_matches = [match(2, 6)]
-    nonoverlap_matches = auto.get_nonoverlapping_matches('ushers')
+    expected_nonoverlap_matches = [Match(2, 6, 'Y')]
+    nonoverlap_matches = auto.get_matches('ushers', exclude_overlaps=True)
     assert expected_nonoverlap_matches == nonoverlap_matches

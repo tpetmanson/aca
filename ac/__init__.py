@@ -1,2 +1,2 @@
-from ac.ac_cpp import PyAutomaton
+from ac.ac_cpp import Automaton, Match
 

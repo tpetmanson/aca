@@ -28,6 +28,7 @@ private:
     int start, end;
     std::string label;
 public:
+    CppMatch() : start(0), end(0), label("") { };
     CppMatch(const int start, const int end, const std::string& label);
     CppMatch(const int start, const int end, const char* label);
 
@@ -36,6 +37,7 @@ public:
     std::string get_label() const { return label; }
 
     bool is_before(const CppMatch& m) const;
+    CppMatch* operator=(const CppMatch& m);
     bool operator==(const CppMatch& m) const;
     bool operator<(const CppMatch& m) const;
     size_t size() const;

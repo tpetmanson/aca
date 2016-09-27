@@ -1,8 +1,8 @@
 import pytest
-from ac import PyAutomaton
+from ac import Automaton
 
 def test_has_pattern():
-    automaton = PyAutomaton()
+    automaton = Automaton()
     automaton.add('he')
     automaton.add('she')
     automaton.add('us')

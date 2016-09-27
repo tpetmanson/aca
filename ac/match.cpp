@@ -33,6 +33,13 @@ bool CppMatch::operator==(const CppMatch& m) const {
     return start == m.start && end == m.end;
 }
 
+CppMatch* CppMatch::operator=(const CppMatch& m) {
+    this->start = m.get_start();
+    this->end = m.get_end();
+    this->label = m.get_label();
+    return this;
+}
+
 bool CppMatch::is_before(const CppMatch& m) const {
     return end <= m.start;
 }
