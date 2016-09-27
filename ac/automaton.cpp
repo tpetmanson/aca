@@ -205,12 +205,10 @@ KeyValueVector CppAutomaton::get_prefixes_values() const {
 }
 
 void CppAutomaton::__get_prefixes_values(NodePtr node, KeyValueVector& vec, StringVector& strvec) const {
-    if (strvec.size() > 0) {
-        vec.push_back(KeyValue(strvec, node->get_value()));
-    }
+    vec.push_back(KeyValue(strvec, node->get_value()));
     for (auto iter=node->outs.begin() ; iter != node->outs.end() ; ++iter) {
         strvec.push_back(iter->first);
-        this->__get_patterns_values(iter->second, vec, strvec);
+        this->__get_prefixes_values(iter->second, vec, strvec);
         strvec.pop_back();
     }
 }

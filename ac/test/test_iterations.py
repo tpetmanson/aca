@@ -1,6 +1,8 @@
 from ac import Automaton
+import sys
 
 names = [('janek', 'nice'), ('jaan', 'nice'), ('jaagup', 'ugly'), ('jaanus', 'nice'), ('janis', 'nice')]
+
 
 def test_items():
     auto = Automaton()
@@ -12,4 +14,10 @@ def test_items():
     assert list(evs) == list(vs)
 
 
-test_items()
+def test_prefixes():
+    auto = Automaton()
+    auto.add_all(['jaanus', 'janek', 'janis'])
+    prefixes, values = zip(*auto.prefixes())
+    prefixes = [''.join(prefix) for prefix in prefixes]
+    assert prefixes == ['', 'j', 'ja', 'jaa', 'jaan', 'jaanu', 'jaanus', 'jan', 'jane', 'janek', 'jani', 'janis']
+

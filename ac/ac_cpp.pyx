@@ -180,4 +180,3 @@ cdef class Automaton:
 
     def __str__(self):
         return decode(self.cpp_automaton.str())
-
