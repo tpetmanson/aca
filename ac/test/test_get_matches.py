@@ -13,3 +13,13 @@ def test_automaton_with_words():
     expected_nonoverlap_matches = [Match(2, 6, 'Y')]
     nonoverlap_matches = auto.get_matches('ushers', exclude_overlaps=True)
     assert expected_nonoverlap_matches == nonoverlap_matches
+
+
+def test_with_updating():
+    auto = Automaton()
+    auto.add('hers')
+    matches = auto.get_matches('ushers')
+    assert len(matches) == 1
+    auto.add('us')
+    matches = auto.get_matches('ushers')
+    assert len(matches) == 2

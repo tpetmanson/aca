@@ -32,6 +32,13 @@ CppAutomaton::CppAutomaton() : uptodate(false) {
 }
 
 void CppAutomaton::add(const StringVector& pattern, const std::string& value) {
+    #ifdef AC_DEBUG
+        std::cout << "adding pattern with value <" << value << "> where pattern is ";
+        for (const std::string& s : pattern) {
+            std::cout << s << " ";
+        }
+        std::cout << "\n";
+    #endif
     NodePtr node = root;
     NodePtr outnode;
     const std::string* elem;
@@ -94,6 +101,9 @@ NodePtr CppAutomaton::goto_node(const int node_id, const std::string& elem) {
 }
 
 void CppAutomaton::update_automaton() {
+    #ifdef AC_DEBUG
+        std::cout << "updating automaton\n";
+    #endif
     IntVector fail_table(nodes.size(), 0);
     NodePtr root = this->root;
     std::deque<int> Q;
@@ -121,6 +131,9 @@ void CppAutomaton::update_automaton() {
             NodePtr fail_node = nodes[fail_table[dest_node->node_id]];
             dest_node->matches.reserve(dest_node->matches.size() + fail_node->matches.size());
             std::copy(fail_node->matches.begin(), fail_node->matches.end(), std::back_inserter(dest_node->matches));
+            #ifdef AC_DEBUG
+                std::cout << "    dest node has " << dest_node->matches.size() << " matches\n";
+            #endif
         }
     }
     this->fail_table = fail_table;
@@ -146,11 +159,14 @@ MatchVector CppAutomaton::get_matches(const StringVector& text, const bool exclu
         if (node->value != "") {
             for (NodePtr resnode : node->matches) {
                 matches.push_back(CppMatch(idx - resnode->depth, idx+1, resnode->value));
+                #ifdef AC_DEBUG
+                    std::cout << "  " << matches[matches.size()-1].str() << "\n";
+                #endif
             }
         }
     }
     if (exclude_overlaps) {
-        return remove_overlaps(matches);
+        return cpp_remove_overlaps(matches);
     }
     return matches;
 }

@@ -32,6 +32,9 @@ public:
     CppMatch(const int start, const int end, const std::string& label);
     CppMatch(const int start, const int end, const char* label);
 
+    void set_start(const int start);
+    void set_end(const int end);
+    void set_label(const std::string& label);
     int get_start() const { return start; }
     int get_end() const { return end; }
     std::string get_label() const { return label; }
@@ -45,7 +48,7 @@ public:
 };
 
 
-MatchVector remove_overlaps(MatchVector matches);
+MatchVector cpp_remove_overlaps(MatchVector matches);
 
 
 END_NAMESPACE

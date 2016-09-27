@@ -51,6 +51,18 @@ bool CppMatch::operator<(const CppMatch& m) const {
     return start < m.start;
 }
 
+void CppMatch::set_start(const int start) {
+    this->start = start;
+}
+
+void CppMatch::set_end(const int end) {
+    this->end = end;
+}
+
+void CppMatch::set_label(const std::string& label) {
+    this->label = label;
+}
+
 size_t CppMatch::size() const {
     return end - start;
 }
@@ -61,7 +73,7 @@ std::string CppMatch::str() const {
     return ss.str();
 }
 
-MatchVector remove_overlaps(MatchVector matches) {
+MatchVector cpp_remove_overlaps(MatchVector matches) {
     if (matches.size() == 0) {
         return matches;
     }
@@ -79,10 +91,10 @@ MatchVector remove_overlaps(MatchVector matches) {
     });
     IntVector scores = lengths;
     IntVector prev(scores.size(), -1);
-    int highscore = -1;
-    int highpos = -1;
+    int highscore = scores[0];
+    int highpos = 0;
     for (size_t i=1 ; i<matches.size() ; ++i) {
-        int bestscore = -1;
+        int bestscore = scores[i];
         int bestprev = -1;
         int j = static_cast<int>(i);
         while (j >= 0) {
@@ -110,12 +122,40 @@ MatchVector remove_overlaps(MatchVector matches) {
             highpos = i;
         }
     }
+    #ifdef AC_DEBUG
+        std::cout << "matches:";
+        for (int i=0 ; i<matches.size() ; ++i) {
+            std::cout << " [" << i << "]=" << matches[i].str();
+        }
+        std::cout << '\n';
+
+        std::cout << "scores:";
+        for (int i=0 ; i<scores.size() ; ++i) {
+            std::cout << " [" << i << "]=" << scores[i];
+        }
+        std::cout << '\n';
+
+        std::cout << "prev:";
+        for (int i=0 ; i<prev.size() ; ++i) {
+            std::cout << " [" << i << "]=" << prev[i];
+        }
+        std::cout << '\n';
+
+        std::cout << "highscore: " << highscore << "\n";
+        std::cout << "highpos: " << highpos << "\n";
+    #endif
     // back-track non-overlappng spans that we should keep
     IntVector keep;
     while (highpos != -1) {
         keep.push_back(highpos);
         highpos = prev[highpos];
     }
+    #ifdef AC_DEBUG
+        std::cout << "keep:";
+        for (int i=0 ; i<keep.size() ; ++i) {
+            std::cout << " [" << i << "]=" << keep[i];
+        }
+    #endif
     // create new output array
     MatchVector result;
     result.reserve(keep.size());

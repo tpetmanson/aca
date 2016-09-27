@@ -10,11 +10,16 @@ cdef extern from "all.h" namespace "ac":
         CppMatch() except +
         CppMatch(int, int, string) except +
         CppMatch(int, int, char*) except +
+        void set_start(int)
+        void set_end(int)
+        void set_label(string)
         int get_start()
         int get_end()
         string get_label()
         int is_before(const CppMatch&)
         size_t size()
+
+    cdef vector[CppMatch] cpp_remove_overlaps(vector[CppMatch]);
 
     cdef cppclass CppAutomaton:
         Automaton() except +
@@ -45,7 +50,7 @@ def encode_list(lst):
 
 class Match:
 
-    def __init__(self, start, end, label):
+    def __init__(self, start, end, label='Y'):
         self.__start = int(start)
         self.__end = int(end)
         assert self.__start < self.__end
@@ -73,6 +78,31 @@ class Match:
         return self.__label
 
 
+cdef vector[CppMatch] matches_to_cppmatches(matches):
+    cdef vector[CppMatch] vec
+    cdef CppMatch cppmatch;
+    vec.reserve(len(matches))
+    for match in matches:
+        cppmatch.set_start(match.start)
+        cppmatch.set_end(match.end)
+        cppmatch.set_label(encode(match.label))
+        vec.push_back(cppmatch)
+    return vec
+
+cdef cppmatches_to_matches(vector[CppMatch] cppmatches):
+    result = [None]*cppmatches.size()
+    for i in range(cppmatches.size()):
+        result[i] = Match(cppmatches[i].get_start(), cppmatches[i].get_end(), decode(cppmatches[i].get_label()))
+    return result
+
+def remove_overlaps(matches):
+    cdef vector[CppMatch] cppmatches;
+    cdef vector[CppMatch] cppresult;
+    cppmatches = matches_to_cppmatches(matches)
+    cppresult = cpp_remove_overlaps(cppmatches)
+    return cppmatches_to_matches(cppresult)
+
+
 cdef class Automaton:
     cdef CppAutomaton* cpp_automaton
 
@@ -93,10 +123,7 @@ cdef class Automaton:
 
     def get_matches(self, text, exclude_overlaps=True):
         matches = self.cpp_automaton.get_matches(encode_list(text), exclude_overlaps)
-        result = [None]*matches.size()
-        for i in range(matches.size()):
-            result[i] = Match(matches[i].get_start(), matches[i].get_end(), decode(matches[i].get_label()))
-        return result
+        return cppmatches_to_matches(matches)
 
     def __str__(self):
         return decode(self.cpp_automaton.str())
