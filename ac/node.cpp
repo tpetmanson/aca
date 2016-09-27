@@ -24,11 +24,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 BEGIN_NAMESPACE(ac)
 
-Node::Node(const int node_id, const int depth) : node_id(node_id), depth(depth), value("") { }
+CppNode::CppNode(const int node_id, const int depth) : node_id(node_id), depth(depth), value("") { }
 
-Node::Node(const int node_id, const int depth, const std::string& value) : node_id(node_id), depth(depth), value(value) { }
+CppNode::CppNode(const int node_id, const int depth, const std::string& value) : node_id(node_id), depth(depth), value(value) { }
 
-NodePtr Node::get_outnode(const std::string& key) const {
+NodePtr CppNode::get_outnode(const std::string& key) const {
     auto iter = outs.find(key);
     if (iter != outs.end()) {
         return iter->second;
@@ -36,23 +36,23 @@ NodePtr Node::get_outnode(const std::string& key) const {
     return NodePtr();
 }
 
-void Node::set_outnode(const std::string& key, const NodePtr value) {
+void CppNode::set_outnode(const std::string& key, const NodePtr value) {
     outs[key] = value;
 }
 
-void Node::add_match(const NodePtr node) {
+void CppNode::add_match(const NodePtr node) {
     matches.push_back(node);
 }
 
-bool Node::operator==(const Node& n) const {
+bool CppNode::operator==(const CppNode& n) const {
     return node_id == n.node_id;
 }
 
 END_NAMESPACE
 
 BEGIN_NAMESPACE(std)
-template <> struct hash<ac::Node> {
-    size_t operator()(const ac::Node& node) const {
+template <> struct hash<ac::CppNode> {
+    size_t operator()(const ac::CppNode& node) const {
         return static_cast<size_t>(node.get_id());
     }
 };
@@ -60,7 +60,7 @@ END_NAMESPACE
 
 BEGIN_NAMESPACE(ac)
 
-std::string Node::str() const {
+std::string CppNode::str() const {
     std::stringstream ss;
     std::string indent;
     for (int i=0 ; i<depth+1 ; ++i) indent += "  ";

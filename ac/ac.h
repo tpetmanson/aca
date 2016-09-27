@@ -31,13 +31,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 BEGIN_NAMESPACE(ac)
 
 // forward declare our classes
-class Node;
-class Match;
-class Automaton;
+class CppNode;
+class CppMatch;
+class CppAutomaton;
 
 // create some useful type definitions
-typedef std::shared_ptr<Node> NodePtr;
-typedef std::vector<Match> MatchVector;
+typedef std::shared_ptr<CppNode> NodePtr;
+typedef std::vector<CppMatch> MatchVector;
 typedef std::vector<std::string> StringVector;
 typedef std::vector<int> IntVector;
 typedef std::vector<NodePtr> NodeVector;

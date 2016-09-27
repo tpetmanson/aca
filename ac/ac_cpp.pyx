@@ -6,22 +6,22 @@ from libcpp.vector cimport vector
 import unicodedata
 
 cdef extern from "all.h" namespace "ac":
-    cdef cppclass Match:
-        Match(int, int, string) except +
-        Match(int, int, char*) except +
+    cdef cppclass CppMatch:
+        CppMatch(int, int, string) except +
+        CppMatch(int, int, char*) except +
         int get_start()
         int get_end()
         string get_label()
-        int is_before(const Match&)
+        int is_before(const CppMatch&)
         size_t size()
 
-    cdef cppclass Automaton:
+    cdef cppclass CppAutomaton:
         Automaton() except +
         void add(vector[string]&, string)
         bool has_pattern(vector[string]&)
         bool has_prefix(vector[string]&)
         string get_value(vector[string]&, string)
-        vector[Match] get_matches(vector[string]&, bool)
+        vector[CppMatch] get_matches(vector[string]&, bool)
         string str()
 
 
@@ -41,11 +41,11 @@ def decode(txt):
 def encode_list(lst):
     return [encode(e) for e in lst]
 
-cdef class PyAutomaton:
-    cdef Automaton* cpp_automaton
+cdef class Automaton:
+    cdef CppAutomaton* cpp_automaton
 
     def __cinit__(self):
-        self.cpp_automaton = new Automaton()
+        self.cpp_automaton = new CppAutomaton()
 
     def __dealloc__(self):
         del self.cpp_automaton

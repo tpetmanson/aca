@@ -23,15 +23,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 BEGIN_NAMESPACE(ac)
 
-class Node {
+class CppNode {
 private:
     int node_id, depth;
     std::string value;
     std::unordered_map<std::string, NodePtr> outs;
     NodeVector matches;
 public:
-    Node(const int node_id, const int depth);
-    Node(const int node_id, const int depth, const std::string& value);
+    CppNode(const int node_id, const int depth);
+    CppNode(const int node_id, const int depth, const std::string& value);
 
     int get_id() const { return node_id; }
     int get_depth() const { return depth; }
@@ -41,11 +41,11 @@ public:
     void set_outnode(const std::string& key, const NodePtr value);
     void add_match(const NodePtr node);
 
-    bool operator==(const Node& n) const;
+    bool operator==(const CppNode& n) const;
 
     std::string str() const;
 
-    friend class Automaton;
+    friend class CppAutomaton;
 };
 
 END_NAMESPACE

@@ -23,21 +23,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 BEGIN_NAMESPACE(ac)
 
-class Match {
+class CppMatch {
 private:
     int start, end;
     std::string label;
 public:
-    Match(const int start, const int end, const std::string& label);
-    Match(const int start, const int end, const char* label);
+    CppMatch(const int start, const int end, const std::string& label);
+    CppMatch(const int start, const int end, const char* label);
 
     int get_start() const { return start; }
     int get_end() const { return end; }
     std::string get_label() const { return label; }
 
-    bool is_before(const Match& m) const;
-    bool operator==(const Match& m) const;
-    bool operator<(const Match& m) const;
+    bool is_before(const CppMatch& m) const;
+    bool operator==(const CppMatch& m) const;
+    bool operator<(const CppMatch& m) const;
     size_t size() const;
     std::string str() const;
 };

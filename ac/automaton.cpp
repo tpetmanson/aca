@@ -26,12 +26,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 BEGIN_NAMESPACE(ac)
 
-Automaton::Automaton() : uptodate(false) {
-    root = std::make_shared<Node>(0, -1);
+CppAutomaton::CppAutomaton() : uptodate(false) {
+    root = std::make_shared<CppNode>(0, -1);
     nodes.push_back(root);
 }
 
-void Automaton::add(const StringVector& pattern, const std::string& value) {
+void CppAutomaton::add(const StringVector& pattern, const std::string& value) {
     NodePtr node = root;
     NodePtr outnode;
     const std::string* elem;
@@ -42,7 +42,7 @@ void Automaton::add(const StringVector& pattern, const std::string& value) {
         if (outnode) {
             node = outnode;
         } else {
-            NodePtr newnode = std::make_shared<Node>(nodes.size(), depth);
+            NodePtr newnode = std::make_shared<CppNode>(nodes.size(), depth);
             node->set_outnode(*elem, newnode);
             nodes.push_back(newnode);
             node = newnode;
@@ -53,7 +53,7 @@ void Automaton::add(const StringVector& pattern, const std::string& value) {
     uptodate = false;
 }
 
-NodePtr Automaton::find_node(const StringVector& prefix) const {
+NodePtr CppAutomaton::find_node(const StringVector& prefix) const {
     NodePtr node = root;
     NodePtr outnode;
     for (int idx=0 ; idx<prefix.size() ; ++idx) {
@@ -67,22 +67,22 @@ NodePtr Automaton::find_node(const StringVector& prefix) const {
     return node;
 }
 
-bool Automaton::has_pattern(const StringVector& pattern) const {
+bool CppAutomaton::has_pattern(const StringVector& pattern) const {
     NodePtr node = find_node(pattern);
     return node && node->get_value() != "";
 }
 
-bool Automaton::has_prefix(const StringVector& prefix) const {
+bool CppAutomaton::has_prefix(const StringVector& prefix) const {
     NodePtr node = find_node(prefix);
     return node != NULL;
 }
 
-std::string Automaton::get_value(const StringVector& pattern) const {
+std::string CppAutomaton::get_value(const StringVector& pattern) const {
     NodePtr node = find_node(pattern);
     return node ? node->get_value() : std::string("");
 }
 
-NodePtr Automaton::goto_node(const int node_id, const std::string& elem) {
+NodePtr CppAutomaton::goto_node(const int node_id, const std::string& elem) {
     NodePtr node = this->nodes[node_id];
     auto iter = node->outs.find(elem);
     if (iter != node->outs.end()) {
@@ -93,7 +93,7 @@ NodePtr Automaton::goto_node(const int node_id, const std::string& elem) {
     return NodePtr();
 }
 
-void Automaton::update_automaton() {
+void CppAutomaton::update_automaton() {
     IntVector fail_table(nodes.size(), 0);
     NodePtr root = this->root;
     std::deque<int> Q;
@@ -127,7 +127,7 @@ void Automaton::update_automaton() {
     this->uptodate = true;
 }
 
-MatchVector Automaton::get_matches(const StringVector& text, const bool exclude_overlaps) {
+MatchVector CppAutomaton::get_matches(const StringVector& text, const bool exclude_overlaps) {
     MatchVector matches;
     if (!this->uptodate) {
         this->update_automaton();
@@ -144,7 +144,7 @@ MatchVector Automaton::get_matches(const StringVector& text, const bool exclude_
         #endif
         if (node->value != "") {
             for (NodePtr resnode : node->matches) {
-                matches.push_back(Match(idx - resnode->depth, idx+1, resnode->value));
+                matches.push_back(CppMatch(idx - resnode->depth, idx+1, resnode->value));
             }
         }
     }
@@ -154,7 +154,7 @@ MatchVector Automaton::get_matches(const StringVector& text, const bool exclude_
     return matches;
 }
 
-std::string Automaton::str() const {
+std::string CppAutomaton::str() const {
     return root->str();
 }
 

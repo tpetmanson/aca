@@ -26,31 +26,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 BEGIN_NAMESPACE(ac)
 
-Match::Match(const int start, const int end, const std::string& label) : start(start), end(end), label(label) { }
-Match::Match(const int start, const int end, const char* label) : start(start), end(end), label(label) { }
+CppMatch::CppMatch(const int start, const int end, const std::string& label) : start(start), end(end), label(label) { }
+CppMatch::CppMatch(const int start, const int end, const char* label) : start(start), end(end), label(label) { }
 
-bool Match::operator==(const Match& m) const {
+bool CppMatch::operator==(const CppMatch& m) const {
     return start == m.start && end == m.end;
 }
 
-bool Match::is_before(const Match& m) const {
+bool CppMatch::is_before(const CppMatch& m) const {
     return end <= m.start;
 }
 
-bool Match::operator<(const Match& m) const {
+bool CppMatch::operator<(const CppMatch& m) const {
     if (start == m.start) {
         return end < m.end;
     }
     return start < m.start;
 }
 
-size_t Match::size() const {
+size_t CppMatch::size() const {
     return end - start;
 }
 
-std::string Match::str() const {
+std::string CppMatch::str() const {
     std::stringstream ss;
-    ss << "Match(" << start << ", " << end << ", " << label << ")";
+    ss << "CppMatch(" << start << ", " << end << ", " << label << ")";
     return ss.str();
 }
 
@@ -59,7 +59,7 @@ MatchVector remove_overlaps(MatchVector matches) {
         return matches;
     }
     // sort the matches
-    std::sort(matches.begin(), matches.end(), [](const Match& a, const Match& b) {
+    std::sort(matches.begin(), matches.end(), [](const CppMatch& a, const CppMatch& b) {
         if (a.get_start() == b.get_start()) {
             return a.get_end() < b.get_end();
         }
@@ -67,7 +67,7 @@ MatchVector remove_overlaps(MatchVector matches) {
     });
     // compute the lengths
     IntVector lengths(matches.size(), 0);
-    std::transform(matches.begin(), matches.end(), lengths.begin(), [](const Match& m) {
+    std::transform(matches.begin(), matches.end(), lengths.begin(), [](const CppMatch& m) {
         return m.size();
     });
     IntVector scores = lengths;

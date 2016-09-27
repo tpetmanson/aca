@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 BEGIN_NAMESPACE(ac)
 
-class Automaton {
+class CppAutomaton {
 private:
     NodePtr root;
     std::set<std::string> alphabet;
@@ -34,7 +34,7 @@ private:
 protected:
     NodePtr goto_node(const int node_id, const std::string& elem);
 public:
-    Automaton();
+    CppAutomaton();
 
     // add a new pattern (key) and associate it with a value
     void add(const StringVector& pattern, const std::string& value);
