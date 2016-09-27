@@ -56,6 +56,25 @@ public:
     // get the value of specified key.
     std::string get_value(const StringVector& pattern) const;
 
+    // get all the patterns and their representive values in the automaton
+    KeyValueVector get_patterns_values() const;
+
+    // get all the patterns+prefixes and their representive values in the automaton
+    KeyValueVector get_prefixes_values() const;
+
+    // serialize automaton to a file
+    void serialize_to(const std::string filename);
+
+    // serialize to a string
+    std::string serialize();
+
+    // deserialize automaton from a file
+    void deserialize_from(const std::string filename);
+
+    // deserialize
+    void deserialize(const std::string serialized);
+
+    // print the structure of the automaton
     std::string str() const;
 };
 

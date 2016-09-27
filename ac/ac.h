@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <utility>
 
 
 BEGIN_NAMESPACE(ac)
@@ -41,6 +42,10 @@ typedef std::vector<CppMatch> MatchVector;
 typedef std::vector<std::string> StringVector;
 typedef std::vector<int> IntVector;
 typedef std::vector<NodePtr> NodeVector;
+
+// type used to return all the keys/values in the automaton
+typedef std::vector<std::pair<StringVector, std::string>> KeyValueVector;
+
 
 END_NAMESPACE
 

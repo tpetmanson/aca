@@ -3,6 +3,7 @@
 from libcpp cimport bool
 from libcpp.string cimport string
 from libcpp.vector cimport vector
+from libcpp.utility cimport pair
 import unicodedata
 
 cdef extern from "all.h" namespace "ac":
@@ -29,6 +30,15 @@ cdef extern from "all.h" namespace "ac":
         bool has_prefix(vector[string]&)
         string get_value(vector[string]&)
         vector[CppMatch] get_matches(vector[string]&, bool)
+        vector[pair[vector[string], string]] get_patterns_values()
+        vector[pair[vector[string], string]] get_prefix_values()
+
+        # serialization related
+        string serialize()
+        void deserialize(string)
+        void serialize_to (string) except +
+        void deserialize_from(string) except +
+
         string str()
 
 

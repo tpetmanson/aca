@@ -21,6 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "node.h"
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <algorithm>
 #include <deque>
 
@@ -173,6 +175,46 @@ MatchVector CppAutomaton::get_matches(const StringVector& text, const bool exclu
 
 std::string CppAutomaton::str() const {
     return root->str();
+}
+
+KeyValueVector CppAutomaton::get_patterns_values() const {
+    KeyValueVector vec;
+    return vec;
+}
+
+KeyValueVector CppAutomaton::get_prefixes_values() const {
+    KeyValueVector vec;
+    return vec;
+}
+
+
+void serialize_to_stream(CppAutomaton& automaton, std::ostream& os) {
+}
+
+void deserialize_from_stream(CppAutomaton& automaton, std::istream& is) {
+}
+
+void CppAutomaton::serialize_to(const std::string filename) {
+    std::ofstream fout(filename);
+    serialize_to_stream(*this, fout);
+    fout.close();
+}
+
+std::string CppAutomaton::serialize() {
+    std::stringstream ss;
+    serialize_to_stream(*this, ss);
+    return ss.str();
+}
+
+void CppAutomaton::deserialize_from(const std::string filename) {
+    std::ifstream fin(filename);
+    deserialize_from_stream(*this, fin);
+    fin.close();
+}
+
+void CppAutomaton::deserialize(const std::string serialized) {
+    std::stringstream ss(serialized);
+    deserialize_from_stream(*this, ss);
 }
 
 END_NAMESPACE
