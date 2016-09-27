@@ -35,7 +35,7 @@ void CppAutomaton::add(const StringVector& pattern, const std::string& value) {
     NodePtr node = root;
     NodePtr outnode;
     const std::string* elem;
-    for (int depth=0 ; depth<pattern.size() ; ++depth) {
+    for (size_t depth=0 ; depth<pattern.size() ; ++depth) {
         elem = &pattern[depth];
         alphabet.insert(*elem);
         outnode = node->get_outnode(*elem);
@@ -56,7 +56,7 @@ void CppAutomaton::add(const StringVector& pattern, const std::string& value) {
 NodePtr CppAutomaton::find_node(const StringVector& prefix) const {
     NodePtr node = root;
     NodePtr outnode;
-    for (int idx=0 ; idx<prefix.size() ; ++idx) {
+    for (size_t idx=0 ; idx<prefix.size() ; ++idx) {
         outnode = node->get_outnode(prefix[idx]);
         if (outnode) {
             node = outnode;
@@ -127,13 +127,14 @@ void CppAutomaton::update_automaton() {
     this->uptodate = true;
 }
 
+
 MatchVector CppAutomaton::get_matches(const StringVector& text, const bool exclude_overlaps) {
     MatchVector matches;
     if (!this->uptodate) {
         this->update_automaton();
     }
     int node_id = this->root->node_id;
-    for (int idx=0 ; idx<text.size() ; ++idx) {
+    for (size_t idx=0 ; idx<text.size() ; ++idx) {
         while (goto_node(node_id, text[idx]) == NULL) {
             node_id = this->fail_table[node_id]; // follow fail
         }

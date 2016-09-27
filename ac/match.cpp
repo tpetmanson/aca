@@ -74,10 +74,10 @@ MatchVector remove_overlaps(MatchVector matches) {
     IntVector prev(scores.size(), -1);
     int highscore = -1;
     int highpos = -1;
-    for (int i=1 ; i<matches.size() ; ++i) {
+    for (size_t i=1 ; i<matches.size() ; ++i) {
         int bestscore = -1;
         int bestprev = -1;
-        int j = i;
+        int j = static_cast<int>(i);
         while (j >= 0) {
             // if spans do not overlap
             if (matches[j].is_before(matches[i])) {
