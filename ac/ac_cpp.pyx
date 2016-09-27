@@ -31,7 +31,7 @@ cdef extern from "all.h" namespace "ac":
         string get_value(vector[string]&)
         vector[CppMatch] get_matches(vector[string]&, bool)
         vector[pair[vector[string], string]] get_patterns_values()
-        vector[pair[vector[string], string]] get_prefix_values()
+        vector[pair[vector[string], string]] get_prefixes_values()
 
         # serialization related
         string serialize()
@@ -57,6 +57,9 @@ def decode(txt):
 
 def encode_list(lst):
     return [encode(e) for e in lst]
+
+def decode_list(lst):
+    return [decode(e) for e in lst]
 
 
 class Match:
@@ -159,6 +162,16 @@ cdef class Automaton:
             match.set_elems(text[match.start:match.end])
         return results
 
+    def items(self):
+        cdef vector[pair[vector[string], string]] vec = self.cpp_automaton.get_patterns_values()
+        for idx in range(vec.size()):
+            yield decode_list(vec[idx].first), decode(vec[idx].second)
+
+    def prefixes(self):
+        cdef vector[pair[vector[string], string]] vec = self.cpp_automaton.get_prefixes_values()
+        for idx in range(vec.size()):
+            yield decode_list(vec[idx].first), decode(vec[idx].second)
+
     def __getitem__(self, pattern):
         return decode(self.cpp_automaton.get_value(encode_list(pattern)))
 
@@ -167,3 +180,4 @@ cdef class Automaton:
 
     def __str__(self):
         return decode(self.cpp_automaton.str())
+

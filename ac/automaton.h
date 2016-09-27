@@ -58,9 +58,11 @@ public:
 
     // get all the patterns and their representive values in the automaton
     KeyValueVector get_patterns_values() const;
+    void __get_patterns_values(NodePtr node, KeyValueVector& vec, StringVector& strvec) const;
 
     // get all the patterns+prefixes and their representive values in the automaton
     KeyValueVector get_prefixes_values() const;
+    void __get_prefixes_values(NodePtr node, KeyValueVector& vec, StringVector& strvec) const;
 
     // serialize automaton to a file
     void serialize_to(const std::string filename);

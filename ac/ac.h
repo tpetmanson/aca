@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <map>
 #include <utility>
 
 
@@ -44,7 +44,8 @@ typedef std::vector<int> IntVector;
 typedef std::vector<NodePtr> NodeVector;
 
 // type used to return all the keys/values in the automaton
-typedef std::vector<std::pair<StringVector, std::string>> KeyValueVector;
+typedef std::pair<StringVector, std::string> KeyValue;
+typedef std::vector<KeyValue> KeyValueVector;
 
 
 END_NAMESPACE

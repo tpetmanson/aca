@@ -27,7 +27,7 @@ class CppNode {
 private:
     int node_id, depth;
     std::string value;
-    std::unordered_map<std::string, NodePtr> outs;
+    std::map<std::string, NodePtr> outs;
     NodeVector matches;
 public:
     CppNode(const int node_id, const int depth);

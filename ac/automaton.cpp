@@ -179,13 +179,42 @@ std::string CppAutomaton::str() const {
 
 KeyValueVector CppAutomaton::get_patterns_values() const {
     KeyValueVector vec;
+    vec.reserve(this->nodes.size()); // ~approximate size
+    StringVector strvec;
+    this->__get_patterns_values(root, vec, strvec);
     return vec;
+}
+
+void CppAutomaton::__get_patterns_values(NodePtr node, KeyValueVector& vec, StringVector& strvec) const {
+    if (strvec.size() > 0 && node->get_value().size() > 0) {
+        vec.push_back(KeyValue(strvec, node->get_value()));
+    }
+    for (auto iter=node->outs.begin() ; iter != node->outs.end() ; ++iter) {
+        strvec.push_back(iter->first);
+        this->__get_patterns_values(iter->second, vec, strvec);
+        strvec.pop_back();
+    }
 }
 
 KeyValueVector CppAutomaton::get_prefixes_values() const {
     KeyValueVector vec;
+    vec.reserve(this->nodes.size()*2); // ~approximate size
+    StringVector strvec;
+    this->__get_prefixes_values(root, vec, strvec);
     return vec;
 }
+
+void CppAutomaton::__get_prefixes_values(NodePtr node, KeyValueVector& vec, StringVector& strvec) const {
+    if (strvec.size() > 0) {
+        vec.push_back(KeyValue(strvec, node->get_value()));
+    }
+    for (auto iter=node->outs.begin() ; iter != node->outs.end() ; ++iter) {
+        strvec.push_back(iter->first);
+        this->__get_patterns_values(iter->second, vec, strvec);
+        strvec.pop_back();
+    }
+}
+
 
 
 void serialize_to_stream(CppAutomaton& automaton, std::ostream& os) {
