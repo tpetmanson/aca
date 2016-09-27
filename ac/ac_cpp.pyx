@@ -24,6 +24,7 @@ cdef extern from "all.h" namespace "ac":
     cdef cppclass CppAutomaton:
         Automaton() except +
         void add(vector[string]&, string)
+        void update_automaton()
         bool has_pattern(vector[string]&)
         bool has_prefix(vector[string]&)
         string get_value(vector[string]&, string)
@@ -55,12 +56,13 @@ class Match:
         self.__end = int(end)
         assert self.__start < self.__end
         self.__label = str(label)
+        self.__elems = None
 
     def __eq__(self, other):
         return self.start == other.start and self.end == other.end and self.label == other.label
 
     def __str__(self):
-        return 'Match({},{},{})'.format(self.start, self.end, self.label)
+        return 'Match({},{},{},{})'.format(self.start, self.end, self.elems, self.label)
 
     def __repr__(self):
         return str(self)
@@ -76,6 +78,13 @@ class Match:
     @property
     def label(self):
         return self.__label
+
+    @property
+    def elems(self):
+        return self.__elems
+
+    def set_elems(self, elems):
+        self.__elems = elems
 
 
 cdef vector[CppMatch] matches_to_cppmatches(matches):
@@ -115,6 +124,17 @@ cdef class Automaton:
     def add(self, pattern, value='Y'):
         self.cpp_automaton.add(encode_list(pattern), encode(value))
 
+    def add_all(self, patterns):
+        for pattern in patterns:
+            if isinstance(pattern, tuple):
+                pattern, value = pattern
+                self.add(pattern, value)
+            else:
+                self.add(pattern)
+
+    def update_automaton(self):
+        self.cpp_automaton.update_automaton()
+
     def has_pattern(self, pattern):
         return self.cpp_automaton.has_pattern(encode_list(pattern))
 
@@ -123,7 +143,11 @@ cdef class Automaton:
 
     def get_matches(self, text, exclude_overlaps=True):
         matches = self.cpp_automaton.get_matches(encode_list(text), exclude_overlaps)
-        return cppmatches_to_matches(matches)
+        results = cppmatches_to_matches(matches)
+        for match in results:
+            match.set_elems(text[match.start:match.end])
+        return results
 
     def __str__(self):
         return decode(self.cpp_automaton.str())
+
