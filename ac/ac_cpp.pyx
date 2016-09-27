@@ -27,7 +27,7 @@ cdef extern from "all.h" namespace "ac":
         void update_automaton()
         bool has_pattern(vector[string]&)
         bool has_prefix(vector[string]&)
-        string get_value(vector[string]&, string)
+        string get_value(vector[string]&)
         vector[CppMatch] get_matches(vector[string]&, bool)
         string str()
 
@@ -113,6 +113,7 @@ def remove_overlaps(matches):
 
 
 cdef class Automaton:
+    """ Aho-Corasick keyword tree + automaton. """
     cdef CppAutomaton* cpp_automaton
 
     def __cinit__(self):
@@ -148,6 +149,11 @@ cdef class Automaton:
             match.set_elems(text[match.start:match.end])
         return results
 
+    def __getitem__(self, pattern):
+        return decode(self.cpp_automaton.get_value(encode_list(pattern)))
+
+    def __setitem__(self, pattern, value):
+        self.add(pattern, value)
+
     def __str__(self):
         return decode(self.cpp_automaton.str())
-
