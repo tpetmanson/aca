@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 BEGIN_NAMESPACE(ac)
 
+
 class CppNode {
 private:
     int node_id, depth;
@@ -42,7 +43,6 @@ public:
     void add_match(const NodePtr node);
 
     bool operator==(const CppNode& n) const;
-
     std::string str() const;
 
     friend class CppAutomaton;

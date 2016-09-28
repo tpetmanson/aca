@@ -172,6 +172,12 @@ cdef class Automaton:
         for idx in range(vec.size()):
             yield decode_list(vec[idx].first), decode(vec[idx].second)
 
+    def serialize_to(self, fnm):
+        self.cpp_automaton.serialize_to(encode(fnm))
+
+    def serialize(self):
+        return self.cpp_automaton.serialize()
+
     def __getitem__(self, pattern):
         return decode(self.cpp_automaton.get_value(encode_list(pattern)))
 

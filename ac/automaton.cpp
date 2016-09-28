@@ -46,7 +46,7 @@ void CppAutomaton::add(const StringVector& pattern, const std::string& value) {
     const std::string* elem;
     for (size_t depth=0 ; depth<pattern.size() ; ++depth) {
         elem = &pattern[depth];
-        alphabet.insert(*elem);
+        //alphabet.insert(*elem);
         outnode = node->get_outnode(*elem);
         if (outnode) {
             node = outnode;
@@ -213,35 +213,61 @@ void CppAutomaton::__get_prefixes_values(NodePtr node, KeyValueVector& vec, Stri
     }
 }
 
+const std::string AUTOMATON_MARKER = "A";
+const std::string FAILTABLE_MARKER = "F";
+const std::string NODE_MARKER = "N";
+const std::string OUT_MARKER = "O";
+const std::string MATCHES_MARKER = "M";
 
-
-void serialize_to_stream(CppAutomaton& automaton, std::ostream& os) {
+void CppAutomaton::serialize_to_stream(std::ostream& os) {
+    // write generic information
+    os << AUTOMATON_MARKER << " " << nodes.size() << " " << uptodate << "\n";
+    // write fail table
+    os << FAILTABLE_MARKER << " " << fail_table.size();
+    for (int i=0 ; i<fail_table.size() ; ++i) {
+        os << " " << fail_table[i];
+    }
+    os << "\n";
+    // write individual nodes
+    for (int i=0 ; i<nodes.size() ; ++i) {
+        NodePtr node = nodes[i];
+        if (node->node_id != i) {
+            std::cout << "node[" << i << "]->node_id = " << node->node_id;
+        }
+        os << NODE_MARKER << " " << node->node_id << " " << node->outs.size() << "\n";
+        os << node->value << '\0';
+        for (auto j = node->outs.begin() ; j != node->outs.end() ; ++j) {
+            os << OUT_MARKER << "\n";
+            os << j->first << '\0';
+            os << j->second->node_id << "\n";
+        }
+    }
 }
 
-void deserialize_from_stream(CppAutomaton& automaton, std::istream& is) {
+void CppAutomaton::deserialize_from_stream(std::istream& is) {
 }
 
 void CppAutomaton::serialize_to(const std::string filename) {
     std::ofstream fout(filename);
-    serialize_to_stream(*this, fout);
+    serialize_to_stream(fout);
     fout.close();
 }
 
 std::string CppAutomaton::serialize() {
     std::stringstream ss;
-    serialize_to_stream(*this, ss);
+    serialize_to_stream(ss);
     return ss.str();
 }
 
 void CppAutomaton::deserialize_from(const std::string filename) {
     std::ifstream fin(filename);
-    deserialize_from_stream(*this, fin);
+    deserialize_from_stream(fin);
     fin.close();
 }
 
 void CppAutomaton::deserialize(const std::string serialized) {
     std::stringstream ss(serialized);
-    deserialize_from_stream(*this, ss);
+    deserialize_from_stream(ss);
 }
 
 END_NAMESPACE

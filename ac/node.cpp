@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 BEGIN_NAMESPACE(ac)
 
+
 CppNode::CppNode(const int node_id, const int depth) : node_id(node_id), depth(depth), value("") { }
 
 CppNode::CppNode(const int node_id, const int depth, const std::string& value) : node_id(node_id), depth(depth), value(value) { }

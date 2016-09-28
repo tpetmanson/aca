@@ -27,7 +27,7 @@ BEGIN_NAMESPACE(ac)
 class CppAutomaton {
 private:
     NodePtr root;
-    std::set<std::string> alphabet;
+    //std::set<std::string> alphabet;
     NodeVector nodes;
     IntVector fail_table;
     bool uptodate;
@@ -64,17 +64,15 @@ public:
     KeyValueVector get_prefixes_values() const;
     void __get_prefixes_values(NodePtr node, KeyValueVector& vec, StringVector& strvec) const;
 
-    // serialize automaton to a file
+    // serialization
     void serialize_to(const std::string filename);
-
-    // serialize to a string
     std::string serialize();
+    void serialize_to_stream(std::ostream& os);
 
     // deserialize automaton from a file
     void deserialize_from(const std::string filename);
-
-    // deserialize
     void deserialize(const std::string serialized);
+    void deserialize_from_stream(std::istream& is);
 
     // print the structure of the automaton
     std::string str() const;
