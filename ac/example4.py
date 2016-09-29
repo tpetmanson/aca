@@ -1,40 +1,21 @@
 # create a new AC automaton
 from ac import Automaton
-map = Automaton()
 
-# use the automaton as a map
-map['electrify'] = 'verb'
-map['elegant'] = 'adjective'
-map['acid'] = 'noun'
-map['acidic'] = 'adjective'
+automaton = Automaton()
+automaton['Estonia'] = 'Tallinn'
+automaton['Germany'] = 'Berlin'
+automaton['Finland'] = 'Helsinki'
 
-# access it like a Python dictionary
-print (map['acid'])
+# serialize to disk
+automaton.save_to_file('myautomaton.bin')
 
-# using an invalid key raises a KeyError
-#print (map['invalid key'])
+# load from disk
+automaton2 = Automaton()
+automaton2.load_from_file('myautomaton.bin')
 
-# you can use get to provide a default value when key is missing
-print (map.get('invalid key', 'default value'))
+# save / load to binary string
+automaton3 = Automaton()
+automaton3.load_from_string(automaton.save_to_string())
 
-# NB! Implementation specific special case: empty strings
-# denote "missing" values, so you can't use these
-map['special'] = ''
-#print (map['special'])
-
-# you can delete items
-del map['electrify']
-
-# trying to delete a non-existent item raises KeyError
-#del map['invalid key']
-
-# iterate items like a dict
-print ('items:')
-for key, value in map.items():
-    print ('{}: {}'.format(key, value))
-
-
-# you can also iterate prefixes
-print ('prefixes:')
-for prefix, value in map.prefixes():
-    print ('{}: {}'.format(prefix, value))
+print (automaton2['Estonia'])
+print (automaton3['Germany'])

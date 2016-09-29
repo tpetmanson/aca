@@ -11,3 +11,9 @@ def test_map_interface():
     assert len(matches) == 2
     assert matches[0].label == 'USA'
     assert matches[1].label == 'EUROPE'
+
+    assert 'us' in auto
+    assert 'his' not in auto
+    #assert list(auto.keys()) == ['her', 'us']
+    #assert list(auto.values()) == ['EUROPE', 'USA']
+    #assert list(k for k in auto) == list(auto.keys())

@@ -186,6 +186,17 @@ cdef class Automaton:
         for idx in range(vec.size()):
             yield decode_list(vec[idx].first), decode(vec[idx].second)
 
+    '''def keys(self):
+        for key, value in self.items():
+            yield tuple(key)
+
+    def values(self):
+        for key, value in self.items():
+            yield value
+
+    def __iter__(self):
+        return self.keys()'''
+
     def save_to_file(self, fnm):
         self.cpp_automaton.serialize_to(encode(fnm))
 
@@ -214,5 +225,9 @@ cdef class Automaton:
         value = self[pattern] # if value does not exist, raise an exception
         self.add(pattern, '')
 
-    def __str__(self):
+    def __contains__(self, pattern):
+        value = self.get(pattern, None)
+        return value is not None
+
+    def str(self):
         return decode(self.cpp_automaton.str())
