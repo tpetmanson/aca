@@ -201,10 +201,15 @@ def test_names():
 
     with TemporaryDirectory() as tmpdir:
         fnm = os.path.join(tmpdir, 'test.ac')
-        auto.serialize_to(fnm)
+        auto.save_to_file(fnm)
         auto2 = Automaton()
         auto2.load_from_file(fnm)
 
     assert list(auto.items()) == list(auto2.items())
     assert list(auto.prefixes()) == list(auto2.prefixes())
 
+    auto3 = Automaton()
+    auto3.load_from_string(auto2.save_to_string())
+
+    assert list(auto.items()) == list(auto2.items())
+    assert list(auto.prefixes()) == list(auto2.prefixes())
