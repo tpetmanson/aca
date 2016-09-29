@@ -193,16 +193,26 @@ cdef class Automaton:
         return self.cpp_automaton.serialize()
 
     def __getitem__(self, pattern):
-        return decode(self.cpp_automaton.get_value(encode_list(pattern)))
+        value = decode(self.cpp_automaton.get_value(encode_list(pattern)))
+        if len(value) == 0:
+            raise KeyError(pattern)
+        return value
 
-    def get(self, pattern):
-        return self.__getitem__(pattern)
+    def get(self, pattern, default=None):
+        try:
+            return self[pattern]
+        except KeyError as exc:
+            return default
 
     def __setitem__(self, pattern, value):
         self.add(pattern, value)
 
     def set(self, pattern, value=''):
         self.add(pattern, value)
+
+    def __delitem__(self, pattern):
+        value = self[pattern] # if value does not exist, raise an exception
+        self.add(pattern, '')
 
     def __str__(self):
         return decode(self.cpp_automaton.str())

@@ -27,7 +27,7 @@ See https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm for more inform
 
 ## Example usage
 
-### Example 1
+### Example 1: basic use case
 
 Create a dictionary of medicines and find where they match in a text.
 
@@ -57,7 +57,7 @@ Output:
 109 118 ibuprofen
 ```
 
-### Example 2
+### Example 2: use case with tokens
 
 ```python
 # create a new AC automaton
@@ -106,7 +106,170 @@ Output:
 4 6 ['Yuri', 'Artyukhin']
 ```
 
+### Example 3: dictionary use case
 
+You can use the automaton as a space-efficient dictionary.
+However, there are some implementation specific constraints:
+* keys can be only strings or string lists
+* values must be non-empty strings (with length greater than 0)
+* deleting keys won't free up memory, to do that you need to rebuild the Automaton
+* items() will always yield a list of strings
+
+```python
+# create a new AC automaton
+from ac import Automaton
+map = Automaton()
+
+# use the automaton as a map
+map['electrify'] = 'verb'
+map['elegant'] = 'adjective'
+map['acid'] = 'noun'
+map['acidic'] = 'adjective'
+
+# access it like a Python dictionary
+print (map['acid'])
+```
+
+Output:
+
+```
+noun
+```
+
+```python
+# Trying to access an non-existent key will raise KeyError
+print (map['invalid key'])
+```
+Output:
+
+```
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/runpy.py", line 184, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/Users/timo/projects/ac/ac/example3.py", line 15, in <module>
+    print (map['invalid key'])
+  File "ac/ac_cpp.pyx", line 198, in ac.ac_cpp.Automaton.__getitem__ (ac/ac_cpp.cpp:5246)
+    raise KeyError(pattern)
+KeyError: 'invalid key'
+```
+
+```python
+# you can use get to provide a default value when key is missing
+print (map.get('invalid key', 'default value'))
+```
+
+Output:
+```
+default value
+```
+
+```python
+# NB! Implementation specific special case: empty strings
+# denote "missing" values, so you can't use these
+map['special'] = ''
+print (map['special'])
+```
+
+Output:
+
+```
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/runpy.py", line 184, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/Users/timo/projects/ac/ac/example3.py", line 23, in <module>
+    print (map['special'])
+  File "ac/ac_cpp.pyx", line 198, in ac.ac_cpp.Automaton.__getitem__ (ac/ac_cpp.cpp:5246)
+    raise KeyError(pattern)
+KeyError: 'special'
+```
+
+```python
+# you can delete items
+del map['electrify']
+
+# trying to delete a non-existent item raises KeyError
+del map['invalid key']
+```
+
+Output:
+```
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/runpy.py", line 184, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/Users/timo/projects/ac/ac/example3.py", line 15, in <module>
+    print (map['invalid key'])
+  File "ac/ac_cpp.pyx", line 198, in ac.ac_cpp.Automaton.__getitem__ (ac/ac_cpp.cpp:5246)
+    raise KeyError(pattern)
+KeyError: 'invalid key'
+```
+
+```python
+# NB! Implementation specific special case: empty strings
+# denote "missing" values, so you can't use these
+map['special'] = ''
+print (map['special'])
+```
+
+```python
+# iterate items like a dict
+# NB! Due to implementation specifics, this will always yield list of strings.
+print ('items:')
+for key, value in map.items():
+    print ('{}: {}'.format(key, value))
+```
+
+Output:
+```
+items:
+['a', 'c', 'i', 'd']: noun
+['a', 'c', 'i', 'd', 'i', 'c']: adjective
+['e', 'l', 'e', 'g', 'a', 'n', 't']: adjective
+```
+
+```python
+# you can also iterate prefixes
+print ('prefixes:')
+for prefix, value in map.prefixes():
+    print ('{}: {}'.format(prefix, value))
+```
+
+Output:
+
+```
+[]:
+['a']:
+['a', 'c']:
+['a', 'c', 'i']:
+['a', 'c', 'i', 'd']: noun
+['a', 'c', 'i', 'd', 'i']:
+['a', 'c', 'i', 'd', 'i', 'c']: adjective
+['e']:
+['e', 'l']:
+['e', 'l', 'e']:
+['e', 'l', 'e', 'c']:
+['e', 'l', 'e', 'c', 't']:
+['e', 'l', 'e', 'c', 't', 'r']:
+['e', 'l', 'e', 'c', 't', 'r', 'i']:
+['e', 'l', 'e', 'c', 't', 'r', 'i', 'f']:
+['e', 'l', 'e', 'c', 't', 'r', 'i', 'f', 'y']:
+['e', 'l', 'e', 'g']:
+['e', 'l', 'e', 'g', 'a']:
+['e', 'l', 'e', 'g', 'a', 'n']:
+['e', 'l', 'e', 'g', 'a', 'n', 't']: adjective
+['s']:
+['s', 'p']:
+['s', 'p', 'e']:
+['s', 'p', 'e', 'c']:
+['s', 'p', 'e', 'c', 'i']:
+['s', 'p', 'e', 'c', 'i', 'a']:
+['s', 'p', 'e', 'c', 'i', 'a', 'l']:
+```
 
 ## Install
 
