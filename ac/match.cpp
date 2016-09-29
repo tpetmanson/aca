@@ -1,6 +1,6 @@
 /*
 Aho-Corasick keyword tree + automaton implementation for Python.
-Copyright (C) 2016 Timo Petmanson ( tpetmanson@gmail.com )
+Copyright (C) 2016 Funderbeam OÜ ( tpetmanson@gmail.com )
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
