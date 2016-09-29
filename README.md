@@ -27,7 +27,7 @@ See https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm for more inform
 
 ## Example usage
 
-*Example 1*
+### Example 1
 
 Create a dictionary of medicines and find where they match in a text.
 
@@ -56,6 +56,56 @@ Output:
 74 85 paracetamol
 109 118 ibuprofen
 ```
+
+### Example 2
+
+```python
+# create a new AC automaton
+from ac import Automaton
+automaton = Automaton()
+
+# instead of plain strings, you can also use lists of tokens
+names = [
+    ['Yuri', 'Artyukhin'],
+    ['Tom', 'Anderson'],
+    ['Tom', 'Anderson', 'Jr'],
+]
+automaton.add_all(names)
+
+# if you are not using plain strings, make sure you tokenize the text as well
+text = 'Tom Anderson Jr and Yuri Artyukhin work on my project'.split()
+
+print ('matches that maximize the number of matched words')
+for match in automaton.get_matches(text):
+    print (match.start, match.end, match.elems)
+```
+
+Output:
+
+```
+matches that maximize the number of matched words
+0 3 ['Tom', 'Anderson', 'Jr']
+4 6 ['Yuri', 'Artyukhin']
+```
+
+Note that your dictionary contains both Tom Anderson and Tom Anderson Jr.
+By default, the matcher removes the matches that overlap, but this feature
+can be disabled.
+
+```python
+print ('all matches')
+for match in automaton.get_matches(text, exclude_overlaps=False):
+    print (match.start, match.end, match.elems)
+```
+
+Output:
+
+```
+0 2 ['Tom', 'Anderson']
+0 3 ['Tom', 'Anderson', 'Jr']
+4 6 ['Yuri', 'Artyukhin']
+```
+
 
 
 ## Install
