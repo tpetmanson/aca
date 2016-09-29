@@ -226,6 +226,9 @@ const std::string OUT_MARKER = "O";
 const std::string MATCHES_MARKER = "M";
 
 void CppAutomaton::serialize_to_stream(std::ostream& os) {
+    if (!this->uptodate) {
+        this->update_automaton();
+    }
     // write generic information
     os << AUTOMATON_MARKER << " " << nodes.size() << " " << uptodate << "\n";
     // write fail table
