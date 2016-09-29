@@ -70,9 +70,9 @@ public:
     void serialize_to_stream(std::ostream& os);
 
     // deserialize automaton from a file
-    void deserialize_from(const std::string filename);
-    void deserialize(const std::string serialized);
-    void deserialize_from_stream(std::istream& is);
+    static CppAutomaton* deserialize_from_stream(std::istream& is);
+    static CppAutomaton* deserialize_from(const std::string filename);
+    static CppAutomaton* deserialize(const std::string serialized);
 
     // print the structure of the automaton
     std::string str() const;

@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <sstream>
 #include <algorithm>
 #include <deque>
+#include <exception>
 
 BEGIN_NAMESPACE(ac)
 
@@ -213,6 +214,11 @@ void CppAutomaton::__get_prefixes_values(NodePtr node, KeyValueVector& vec, Stri
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// SERIALIZATION
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 const std::string AUTOMATON_MARKER = "A";
 const std::string FAILTABLE_MARKER = "F";
 const std::string NODE_MARKER = "N";
@@ -232,20 +238,18 @@ void CppAutomaton::serialize_to_stream(std::ostream& os) {
     for (int i=0 ; i<nodes.size() ; ++i) {
         NodePtr node = nodes[i];
         if (node->node_id != i) {
-            std::cout << "node[" << i << "]->node_id = " << node->node_id;
+            std::cerr << "ERROR! node[" << i << "]->node_id = " << node->node_id << "\n";
         }
-        os << NODE_MARKER << " " << node->node_id << " " << node->outs.size() << "\n";
+        os << NODE_MARKER << " " << node->node_id << " " << node->depth << " " << node->outs.size() << " ";
         os << node->value << '\0';
         for (auto j = node->outs.begin() ; j != node->outs.end() ; ++j) {
-            os << OUT_MARKER << "\n";
+            os << OUT_MARKER << " ";
             os << j->first << '\0';
-            os << j->second->node_id << "\n";
+            os << j->second->node_id << " ";
         }
     }
 }
 
-void CppAutomaton::deserialize_from_stream(std::istream& is) {
-}
 
 void CppAutomaton::serialize_to(const std::string filename) {
     std::ofstream fout(filename);
@@ -259,15 +263,88 @@ std::string CppAutomaton::serialize() {
     return ss.str();
 }
 
-void CppAutomaton::deserialize_from(const std::string filename) {
-    std::ifstream fin(filename);
-    deserialize_from_stream(fin);
-    fin.close();
+CppAutomaton* CppAutomaton::deserialize_from_stream(std::istream& is) {
+    CppAutomaton* cppauto = new CppAutomaton();
+
+    std::string tmpstr;
+    char tmpchr;
+    long nnodes;
+
+    is >> tmpstr >> nnodes >> cppauto->uptodate;
+    if (tmpstr != AUTOMATON_MARKER) {
+        std::string err = "ERROR! Automaton marker not found!";
+        std::cerr << err;
+        throw new std::runtime_error(err);
+    }
+    // read fail table
+    is >> tmpstr >> nnodes;
+    if (tmpstr != FAILTABLE_MARKER) {
+        std::string err = "ERROR! Failtable marker not found!";
+        std::cerr << err;
+        throw new std::runtime_error(err);
+    }
+    cppauto->fail_table.resize(nnodes);
+    for (int i=0 ; i<cppauto->fail_table.size() ; ++i) {
+        is >> cppauto->fail_table[i];
+    }
+    #ifdef AC_DEBUG
+        std::cout << "Fail table size is " << cppauto->fail_table.size() << "\n";
+        std::cout.flush();
+    #endif
+
+    // create nodes
+    for (int i=0 ; i<nnodes ; ++i) {
+        #ifdef AC_DEBUG
+            std::cout << "Creating node " << i << "\n"; std::cout.flush();
+        #endif
+        cppauto->nodes.push_back(std::make_shared<CppNode>(0, 0));
+    }
+    #ifdef AC_DEBUG
+        std::cout << "Nodes created!\n;"; std::cout.flush();
+    #endif
+    // prepare reading node
+    for (int i=0 ; i<cppauto->nodes.size() ; ++i) {
+        int outsize = 0;
+        NodePtr node = cppauto->nodes[i];
+        is >> tmpstr >> node->node_id >> node->depth >> outsize;
+        if (tmpstr != NODE_MARKER) {
+            std::string err = "ERROR! Node marker not found!";
+            std::cerr << err;
+            throw new std::runtime_error(err);
+        }
+        is.get(); // eat space char
+        std::getline(is, node->value, '\0');
+        #ifdef AC_DEBUG
+            std::cout << "Read node " << node->node_id << "\n"; std::cout.flush();
+        #endif
+        for (int j=0 ; j<outsize ; ++j) {
+            is >> tmpstr;
+            if (tmpstr != OUT_MARKER) {
+                std::string err = "ERROR! Out marker not found!";
+                std::cerr << err;
+                throw new std::runtime_error(err);
+            }
+            is.get(); // eat space char
+            getline(is, tmpstr, '\0');
+            int destnode;
+            is >> destnode;
+            node->outs[tmpstr] = cppauto->nodes[destnode];
+        }
+    }
+    cppauto->root = cppauto->nodes[0];
+    return cppauto;
 }
 
-void CppAutomaton::deserialize(const std::string serialized) {
+CppAutomaton* CppAutomaton::deserialize_from(const std::string filename) {
+    std::ifstream fin(filename);
+    CppAutomaton* automaton = deserialize_from_stream(fin);
+    fin.close();
+    return automaton;
+}
+
+CppAutomaton* CppAutomaton::deserialize(const std::string serialized) {
     std::stringstream ss(serialized);
-    deserialize_from_stream(ss);
+    return deserialize_from_stream(ss);
 }
 
 END_NAMESPACE

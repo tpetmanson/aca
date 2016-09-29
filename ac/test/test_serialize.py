@@ -1,7 +1,9 @@
 """
 Example/test script that detects names from a longer text
 """
+from tempfile import TemporaryDirectory
 from ac import Automaton, Match
+import os
 
 NAMES = '''
 Viktor Mikhaylovich Afanasyev
@@ -193,10 +195,16 @@ NAMES = [name.split() for name in NAMES.strip().splitlines()]
 
 
 def test_names():
-    auto = Automaton(NAMES)
+    auto = Automaton()
     auto.add_all(NAMES)
-    auto.add('Timo Petmanson'.split(), 'developer')
-    auto.add('Jesus Christ'.split(), 'god')
     auto.update_automaton()
-    auto.serialize_to('test.ac')
+
+    with TemporaryDirectory() as tmpdir:
+        fnm = os.path.join(tmpdir, 'test.ac')
+        auto.serialize_to(fnm)
+        auto2 = Automaton()
+        auto2.load_from_file(fnm)
+
+    assert list(auto.items()) == list(auto2.items())
+    assert list(auto.prefixes()) == list(auto2.prefixes())
 

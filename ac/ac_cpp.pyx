@@ -35,9 +35,13 @@ cdef extern from "all.h" namespace "ac":
 
         # serialization related
         string serialize()
-        void deserialize(string)
         void serialize_to (string) except +
-        void deserialize_from(string) except +
+
+        @staticmethod
+        CppAutomaton* deserialize(string)
+
+        @staticmethod
+        CppAutomaton* deserialize_from(string) except +
 
         string str()
 
@@ -135,6 +139,16 @@ cdef class Automaton:
     def __dealloc__(self):
         del self.cpp_automaton
 
+    def load_from_file(self, fnm):
+        cdef CppAutomaton* new_cpp_automaton = self.cpp_automaton.deserialize_from(encode(fnm))
+        del self.cpp_automaton
+        self.cpp_automaton = new_cpp_automaton
+
+    def load_from_string(self, binstring):
+        cdef CppAutomaton* new_cpp_automaton = self.cpp_automaton.deserialize(binstring)
+        del self.cpp_automaton
+        self.cpp_automaton = new_cpp_automaton
+
     def add(self, pattern, value='Y'):
         self.cpp_automaton.add(encode_list(pattern), encode(value))
 
@@ -181,7 +195,13 @@ cdef class Automaton:
     def __getitem__(self, pattern):
         return decode(self.cpp_automaton.get_value(encode_list(pattern)))
 
+    def get(self, pattern):
+        return self.__getitem__(pattern)
+
     def __setitem__(self, pattern, value):
+        self.add(pattern, value)
+
+    def set(self, pattern, value=''):
         self.add(pattern, value)
 
     def __str__(self):
