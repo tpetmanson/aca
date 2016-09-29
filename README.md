@@ -136,24 +136,20 @@ Output:
 noun
 ```
 
+---
+
 ```python
 # Trying to access an non-existent key will raise KeyError
 print (map['invalid key'])
 ```
+
 Output:
 
 ```
-Traceback (most recent call last):
-  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/runpy.py", line 184, in _run_module_as_main
-    "__main__", mod_spec)
-  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/runpy.py", line 85, in _run_code
-    exec(code, run_globals)
-  File "/Users/timo/projects/ac/ac/example3.py", line 15, in <module>
-    print (map['invalid key'])
-  File "ac/ac_cpp.pyx", line 198, in ac.ac_cpp.Automaton.__getitem__ (ac/ac_cpp.cpp:5246)
-    raise KeyError(pattern)
 KeyError: 'invalid key'
 ```
+
+---
 
 ```python
 # you can use get to provide a default value when key is missing
@@ -165,6 +161,8 @@ Output:
 default value
 ```
 
+---
+
 ```python
 # NB! Implementation specific special case: empty strings
 # denote "missing" values, so you can't use these
@@ -175,17 +173,10 @@ print (map['special'])
 Output:
 
 ```
-Traceback (most recent call last):
-  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/runpy.py", line 184, in _run_module_as_main
-    "__main__", mod_spec)
-  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/runpy.py", line 85, in _run_code
-    exec(code, run_globals)
-  File "/Users/timo/projects/ac/ac/example3.py", line 23, in <module>
-    print (map['special'])
-  File "ac/ac_cpp.pyx", line 198, in ac.ac_cpp.Automaton.__getitem__ (ac/ac_cpp.cpp:5246)
-    raise KeyError(pattern)
 KeyError: 'special'
 ```
+
+---
 
 ```python
 # you can delete items
@@ -197,17 +188,10 @@ del map['invalid key']
 
 Output:
 ```
-Traceback (most recent call last):
-  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/runpy.py", line 184, in _run_module_as_main
-    "__main__", mod_spec)
-  File "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/runpy.py", line 85, in _run_code
-    exec(code, run_globals)
-  File "/Users/timo/projects/ac/ac/example3.py", line 15, in <module>
-    print (map['invalid key'])
-  File "ac/ac_cpp.pyx", line 198, in ac.ac_cpp.Automaton.__getitem__ (ac/ac_cpp.cpp:5246)
-    raise KeyError(pattern)
 KeyError: 'invalid key'
 ```
+
+---
 
 ```python
 # NB! Implementation specific special case: empty strings
@@ -215,6 +199,14 @@ KeyError: 'invalid key'
 map['special'] = ''
 print (map['special'])
 ```
+
+Output:
+
+```
+KeyError: 'special'
+```
+
+---
 
 ```python
 # iterate items like a dict
@@ -231,6 +223,8 @@ items:
 ['a', 'c', 'i', 'd', 'i', 'c']: adjective
 ['e', 'l', 'e', 'g', 'a', 'n', 't']: adjective
 ```
+
+---
 
 ```python
 # you can also iterate prefixes
