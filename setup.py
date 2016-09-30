@@ -1,3 +1,4 @@
+import setuptools
 from distutils.core import setup, Extension
 from Cython.Build import cythonize
 
@@ -20,6 +21,12 @@ REQUIREMENTS = [
     'Cython>=0.24.1,<0.25',
     'pytest']
 
+EXTENSIONS = [
+    Extension('ac/ac_cpp',
+              sources=['ac/ac_cpp.pyx'],
+              language='c++',
+              extra_compile_args=['-std=c++11', '-mmacosx-version-min=10.9'],
+              extra_link_args=['-std=c++11'])]
 
 setup(
     name=NAME,
@@ -31,11 +38,5 @@ setup(
     classifiers=CLASSIFIERS,
     install_requires=REQUIREMENTS,
 
-    ext_modules=cythonize(
-        Extension('ac/ac_cpp',
-                  sources=['ac/ac_cpp.pyx'],
-                  language='c++',
-                  extra_compile_args=['-std=c++11', '-mmacosx-version-min=10.9'],
-                  extra_link_args=['-std=c++11'])
-    )
+    ext_modules=cythonize(EXTENSIONS)
 )
