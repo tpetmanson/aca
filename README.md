@@ -304,6 +304,8 @@ Berlin
 ## Install
 
 ```
+pip install wheel
+pip install cython
 pip install ac
 ```
 
@@ -311,7 +313,7 @@ pip install ac
 
 ### Debugging
 
-Define AC_DEBUG macro in ac.h header and recompile to see more debugging output.
+Define ```AC_DEBUG``` macro in ```ac.h``` header and recompile to see more debugging output.
 
 ### License
 

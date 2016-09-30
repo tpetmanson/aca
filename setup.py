@@ -5,7 +5,7 @@ from Cython.Build import cythonize
 
 NAME = "ac"
 VERSION = '0.1'
-DESCRIPTION = 'Aho-Corasick automaton implementation'
+DESCRIPTION = 'Aho-Corasick automaton implementation in C++'
 AUTHOR = 'Timo Petmanson @Funderbeam'
 AUTHOR_EMAIL = 'tpetmanson@gmail.com'
 LICENSE = "GPLv3"
