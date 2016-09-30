@@ -3,7 +3,7 @@ from distutils.core import setup, Extension
 from Cython.Build import cythonize
 
 NAME = "ac"
-VERSION = '1.0'
+VERSION = '0.1'
 DESCRIPTION = 'Aho-Corasick automaton implementation'
 AUTHOR = 'Timo Petmanson @Funderbeam'
 AUTHOR_EMAIL = 'tpetmanson@gmail.com'
