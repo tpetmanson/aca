@@ -1,7 +1,7 @@
 # distutils: language = c++
 # distutils: sources = ac/match.cpp ac/node.cpp ac/automaton.cpp
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals, print_function, absolute_import
+#from __future__ import unicode_literals, print_function, absolute_import
 
 import six
 from libcpp cimport bool
@@ -235,3 +235,4 @@ cdef class Automaton:
 
     def str(self):
         return decode(self.cpp_automaton.str())
+

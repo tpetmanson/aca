@@ -2,13 +2,16 @@ import setuptools
 import platform
 from distutils.core import setup, Extension
 from Cython.Build import cythonize
+from distutils.command.sdist import sdist as _sdist
+from setuptools import find_packages
 
 NAME = "ac"
-VERSION = '0.1'
+VERSION = '0.3'
 DESCRIPTION = 'Aho-Corasick automaton implementation in C++'
 AUTHOR = 'Timo Petmanson @Funderbeam'
 AUTHOR_EMAIL = 'tpetmanson@gmail.com'
-LICENSE = "GPLv3"
+LICENSE = 'GPLv3'
+URL = 'https://github.com/tpetmanson/ac'
 
 CLASSIFIERS = [
     'Intended Audience :: Developers',
@@ -17,6 +20,7 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5'
 ]
+
 
 REQUIREMENTS = [
     'Cython>=0.24.1,<0.25',
@@ -35,7 +39,7 @@ if 'windows' in osname:
     pass # TODO
 
 EXTENSIONS = [
-    Extension('ac/ac_cpp',
+    Extension('ac.ac_cpp',
               sources=['ac/ac_cpp.pyx'],
               language='c++',
               extra_compile_args=EXTRA_ARGS,
@@ -47,9 +51,12 @@ setup(
     description=DESCRIPTION,
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
+    url=URL,
     license=LICENSE,
     classifiers=CLASSIFIERS,
+    setup_requires=REQUIREMENTS,
     install_requires=REQUIREMENTS,
+    packages=find_packages(),
 
     ext_modules=cythonize(EXTENSIONS)
 )
