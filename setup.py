@@ -5,7 +5,7 @@ from Cython.Build import cythonize
 NAME = "ac"
 VERSION = '1.0'
 DESCRIPTION = 'Aho-Corasick automaton implementation'
-AUTHOR = 'Timo Petmanson @Funderbeam OÜ'
+AUTHOR = 'Timo Petmanson @Funderbeam'
 AUTHOR_EMAIL = 'tpetmanson@gmail.com'
 LICENSE = "GPLv3"
 
@@ -19,6 +19,8 @@ CLASSIFIERS = [
 
 REQUIREMENTS = [
     'Cython>=0.24.1,<0.25',
+    'wheel>0.25.0',
+    'six',
     'pytest']
 
 EXTENSIONS = [

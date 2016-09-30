@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
 """
 Example/test script that detects names from a longer text
 """
+from __future__ import unicode_literals, print_function, absolute_import
 from tempfile import TemporaryDirectory
 from ac import Automaton, Match
 import os

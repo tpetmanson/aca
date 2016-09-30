@@ -1,5 +1,9 @@
 # distutils: language = c++
 # distutils: sources = ac/match.cpp ac/node.cpp ac/automaton.cpp
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, print_function, absolute_import
+
+import six
 from libcpp cimport bool
 from libcpp.string cimport string
 from libcpp.vector cimport vector
@@ -50,12 +54,12 @@ def normalize_unicode(text):
     return unicodedata.normalize('NFC', text)
 
 def encode(txt):
-    if isinstance(txt, str):
+    if isinstance(txt, six.string_types):
         return normalize_unicode(txt).encode('utf-8')
     return txt
 
 def decode(txt):
-    if isinstance(txt, bytes):
+    if isinstance(txt, six.binary_type):
         return txt.decode('utf-8')
     return txt
 
