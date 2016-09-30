@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <algorithm>
 
 
-BEGIN_NAMESPACE(ac)
+BEGIN_NAMESPACE(aca)
 
 CppMatch::CppMatch(const int start, const int end, const std::string& label) : start(start), end(end), label(label) { }
 CppMatch::CppMatch(const int start, const int end, const char* label) : start(start), end(end), label(label) { }

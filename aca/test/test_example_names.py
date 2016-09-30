@@ -4,7 +4,7 @@ from __future__ import unicode_literals, print_function, absolute_import
 """
 Example/test script that detects names from a longer text
 """
-from ac import Automaton, Match
+from aca import Automaton, Match
 
 NAMES = '''
 Viktor Mikhaylovich Afanasyev

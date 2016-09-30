@@ -19,9 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef AC__MATCH_H
 #define AC__MATCH_H
 
-#include "ac.h"
+#include "aca.h"
 
-BEGIN_NAMESPACE(ac)
+BEGIN_NAMESPACE(aca)
 
 class CppMatch {
 private:

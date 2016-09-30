@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "match.h"
 #include "node.h"
 #include "automaton.h"
-using namespace ac;
+using namespace aca;
 
 
 int main() {

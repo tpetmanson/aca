@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <deque>
 #include <exception>
 
-BEGIN_NAMESPACE(ac)
+BEGIN_NAMESPACE(aca)
 
 CppAutomaton::CppAutomaton() : uptodate(false) {
     root = std::make_shared<CppNode>(0, -1);

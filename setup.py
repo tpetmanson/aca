@@ -5,13 +5,13 @@ from Cython.Build import cythonize
 from distutils.command.sdist import sdist as _sdist
 from setuptools import find_packages
 
-NAME = "ac"
+NAME = "aca"
 VERSION = '0.3'
 DESCRIPTION = 'Aho-Corasick automaton implementation in C++'
 AUTHOR = 'Timo Petmanson @Funderbeam'
 AUTHOR_EMAIL = 'tpetmanson@gmail.com'
 LICENSE = 'GPLv3'
-URL = 'https://github.com/tpetmanson/ac'
+URL = 'https://github.com/tpetmanson/aca'
 
 CLASSIFIERS = [
     'Intended Audience :: Developers',
@@ -39,8 +39,8 @@ if 'windows' in osname:
     pass # TODO
 
 EXTENSIONS = [
-    Extension('ac.ac_cpp',
-              sources=['ac/ac_cpp.pyx'],
+    Extension('aca.aca_cpp',
+              sources=['aca/aca_cpp.pyx'],
               language='c++',
               extra_compile_args=EXTRA_ARGS,
               extra_link_args=['-std=c++11'])]

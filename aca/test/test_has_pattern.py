@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, print_function, absolute_import
 
 import pytest
-from ac import Automaton
+from aca import Automaton
 
 def test_has_pattern():
     automaton = Automaton()

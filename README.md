@@ -33,7 +33,7 @@ Create a dictionary of medicines and find where they match in a text.
 
 ```python
 # create a new AC automaton
-from ac import Automaton
+from aca import Automaton
 automaton = Automaton()
 
 # add a dictionary of words to the automaton
@@ -61,7 +61,7 @@ Output:
 
 ```python
 # create a new AC automaton
-from ac import Automaton
+from aca import Automaton
 automaton = Automaton()
 
 # instead of plain strings, you can also use lists of tokens
@@ -120,7 +120,7 @@ However, there are some implementation specific constraints:
 
 ```python
 # create a new AC automaton
-from ac import Automaton
+from aca import Automaton
 map = Automaton()
 
 # use the automaton as a map
@@ -272,7 +272,7 @@ Output:
 
 ```python
 
-from ac import Automaton
+from aca import Automaton
 
 automaton = Automaton()
 automaton['Estonia'] = 'Tallinn'

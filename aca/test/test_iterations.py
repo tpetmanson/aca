@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 
-from ac import Automaton
+from aca import Automaton
 import sys
 
 names = [('janek', 'nice'), ('jaan', 'nice'), ('jaagup', 'ugly'), ('jaanus', 'nice'), ('janis', 'nice')]

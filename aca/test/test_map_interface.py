@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 
-from ac import Automaton, Match
+from aca import Automaton, Match
 
 
 def test_map_interface():

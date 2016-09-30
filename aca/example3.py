@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, print_function, absolute_import
 
 # create a new AC automaton
-from ac import Automaton
+from aca import Automaton
 map = Automaton()
 
 # use the automaton as a map

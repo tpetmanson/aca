@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "node.h"
 
-BEGIN_NAMESPACE(ac)
+BEGIN_NAMESPACE(aca)
 
 
 CppNode::CppNode(const int node_id, const int depth) : node_id(node_id), depth(depth), value("") { }
@@ -52,14 +52,14 @@ bool CppNode::operator==(const CppNode& n) const {
 END_NAMESPACE
 
 BEGIN_NAMESPACE(std)
-template <> struct hash<ac::CppNode> {
-    size_t operator()(const ac::CppNode& node) const {
+template <> struct hash<aca::CppNode> {
+    size_t operator()(const aca::CppNode& node) const {
         return static_cast<size_t>(node.get_id());
     }
 };
 END_NAMESPACE
 
-BEGIN_NAMESPACE(ac)
+BEGIN_NAMESPACE(aca)
 
 std::string CppNode::str() const {
     std::stringstream ss;

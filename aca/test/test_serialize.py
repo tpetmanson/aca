@@ -4,7 +4,7 @@ Example/test script that detects names from a longer text
 """
 from __future__ import unicode_literals, print_function, absolute_import
 from tempfile import TemporaryDirectory
-from ac import Automaton, Match
+from aca import Automaton, Match
 import os
 
 NAMES = '''
@@ -202,7 +202,7 @@ def test_names():
     auto.update_automaton()
 
     with TemporaryDirectory() as tmpdir:
-        fnm = os.path.join(tmpdir, 'test.ac')
+        fnm = os.path.join(tmpdir, 'test.aca')
         auto.save_to_file(fnm)
         auto2 = Automaton()
         auto2.load_from_file(fnm)

@@ -1,5 +1,5 @@
 # distutils: language = c++
-# distutils: sources = ac/match.cpp ac/node.cpp ac/automaton.cpp
+# distutils: sources = aca/match.cpp aca/node.cpp aca/automaton.cpp
 # -*- coding: utf-8 -*-
 #from __future__ import unicode_literals, print_function, absolute_import
 
@@ -10,7 +10,7 @@ from libcpp.vector cimport vector
 from libcpp.utility cimport pair
 import unicodedata
 
-cdef extern from "all.h" namespace "ac":
+cdef extern from "all.h" namespace "aca":
     cdef cppclass CppMatch:
         CppMatch() except +
         CppMatch(int, int, string) except +

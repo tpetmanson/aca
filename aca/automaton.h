@@ -19,10 +19,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef AC__AUTOMATON_H
 #define AC__AUTOMATON_H
 
-#include "ac.h"
+#include "aca.h"
 #include <set>
 
-BEGIN_NAMESPACE(ac)
+BEGIN_NAMESPACE(aca)
 
 class CppAutomaton {
 private:
