@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 #include <map>
 #include <utility>
-
+#include <memory>
 
 BEGIN_NAMESPACE(ac)
 

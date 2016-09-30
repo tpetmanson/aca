@@ -1,4 +1,5 @@
 import setuptools
+import platform
 from distutils.core import setup, Extension
 from Cython.Build import cythonize
 
@@ -23,11 +24,21 @@ REQUIREMENTS = [
     'six',
     'pytest']
 
+EXTRA_ARGS = ['-std=c++11']
+
+osname = platform.system().lower()
+if 'linux' in osname:
+    pass
+if 'darwin' in osname:
+    EXTRA_ARGS.append('-mmacosx-version-min=10.9')
+if 'windows' in osname:
+    pass # TODO
+
 EXTENSIONS = [
     Extension('ac/ac_cpp',
               sources=['ac/ac_cpp.pyx'],
               language='c++',
-              extra_compile_args=['-std=c++11', '-mmacosx-version-min=10.9'],
+              extra_compile_args=EXTRA_ARGS,
               extra_link_args=['-std=c++11'])]
 
 setup(
