@@ -304,6 +304,7 @@ Berlin
 ## Install
 
 ```
+pip install wheel
 pip install cython
 pip install ac
 ```
