@@ -1,1 +1,9 @@
-recursive-include examples *.txt *.py *.md *.cpp *.h *.pyx
+recursive-include *.txt *.py *.md *.cpp *.h *.pyx
+include aca/aca_cpp.pyx
+include README.md
+include LICENSE.txt
+include setup.cfg
+include aca/*.cpp
+include aca/*.h
+include aca/*.pyx
+include aca/test/*.py
