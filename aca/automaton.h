@@ -51,6 +51,8 @@ public:
     // rebuild the automaton
     void update_automaton();
 
+    void remove_duplicate_matches();
+
     MatchVector get_matches(const StringVector& text, bool exclude_overlaps=true);
 
     // get the value of specified key.

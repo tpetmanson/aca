@@ -26,6 +26,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <algorithm>
 #include <deque>
 #include <exception>
+#include <set>
+
 
 BEGIN_NAMESPACE(aca)
 
@@ -140,9 +142,22 @@ void CppAutomaton::update_automaton() {
         }
     }
     this->fail_table = fail_table;
+    this->remove_duplicate_matches();
     this->uptodate = true;
 }
 
+void CppAutomaton::remove_duplicate_matches() {
+    for (int i=0 ; i<nodes.size() ; ++i) {
+        std::set<int> s;
+        for (int j=0 ; j<nodes[i]->matches.size() ; ++j) {
+            s.insert(nodes[i]->matches[j]->get_id());
+        }
+        nodes[i]->matches.clear();
+        for (auto j=s.begin() ; j != s.end() ; ++j) {
+            nodes[i]->matches.push_back(nodes[*j]);
+        }
+    }
+}
 
 MatchVector CppAutomaton::get_matches(const StringVector& text, const bool exclude_overlaps) {
     MatchVector matches;
@@ -239,17 +254,26 @@ void CppAutomaton::serialize_to_stream(std::ostream& os) {
     os << "\n";
     // write individual nodes
     for (int i=0 ; i<nodes.size() ; ++i) {
+        #ifdef ACA_DEBUG
+            std::cout << "Writing node " << i << "\n";
+        #endif
         NodePtr node = nodes[i];
         if (node->node_id != i) {
             std::cerr << "ERROR! node[" << i << "]->node_id = " << node->node_id << "\n";
         }
         os << NODE_MARKER << " " << node->node_id << " " << node->depth << " " << node->outs.size() << " ";
         os << node->value << '\0';
+        os << OUT_MARKER << " ";
         for (auto j = node->outs.begin() ; j != node->outs.end() ; ++j) {
-            os << OUT_MARKER << " ";
             os << j->first << '\0';
             os << j->second->node_id << " ";
         }
+        os << MATCHES_MARKER << " " << node->matches.size();
+        for (int k=0 ; k<node->matches.size() ; ++k) {
+            os << " ";
+            os << node->matches[k]->node_id;
+        }
+        os << " ";
     }
 }
 
@@ -296,6 +320,7 @@ CppAutomaton* CppAutomaton::deserialize_from_stream(std::istream& is) {
     #endif
 
     // create nodes
+    cppauto->nodes.clear();
     for (int i=0 ; i<nnodes ; ++i) {
         #ifdef ACA_DEBUG
             std::cout << "Creating node " << i << "\n"; std::cout.flush();
@@ -311,30 +336,59 @@ CppAutomaton* CppAutomaton::deserialize_from_stream(std::istream& is) {
         NodePtr node = cppauto->nodes[i];
         is >> tmpstr >> node->node_id >> node->depth >> outsize;
         if (tmpstr != NODE_MARKER) {
-            std::string err = "ERROR! Node marker not found!";
-            std::cerr << err;
-            throw new std::runtime_error(err);
+            std::stringstream ss;
+            ss << "ERROR! Node marker not found! Found <" << tmpstr << "> instead at byte " << is.tellg();
+            std::cerr << ss.str();
+            throw new std::runtime_error(ss.str());
         }
         is.get(); // eat space char
         std::getline(is, node->value, '\0');
         #ifdef ACA_DEBUG
             std::cout << "Read node " << node->node_id << "\n"; std::cout.flush();
         #endif
+
+        if (node->node_id != i) {
+            std::stringstream ss;
+            ss << "ERROR! Node id <" << node->node_id << "> for node <" << i << "> do not match!";
+            std::cerr << ss.str();
+            throw new std::runtime_error(ss.str());
+        }
+
+        // read outs
+        is >> tmpstr;
+        if (tmpstr != OUT_MARKER) {
+            std::stringstream ss;
+            ss << "ERROR! Out marker not found! Found <" << tmpstr << "> instead at byte " << is.tellg();
+            std::cerr << ss.str();
+            throw new std::runtime_error(ss.str());
+        }
+        node->outs.clear();
         for (int j=0 ; j<outsize ; ++j) {
-            is >> tmpstr;
-            if (tmpstr != OUT_MARKER) {
-                std::string err = "ERROR! Out marker not found!";
-                std::cerr << err;
-                throw new std::runtime_error(err);
-            }
             is.get(); // eat space char
             getline(is, tmpstr, '\0');
             int destnode;
             is >> destnode;
             node->outs[tmpstr] = cppauto->nodes[destnode];
         }
+        // read matches
+        is >> tmpstr;
+        if (tmpstr != MATCHES_MARKER) {
+            std::stringstream ss;
+            ss << "ERROR! Match marker not found! Found <" << tmpstr << "> instead at byte " << is.tellg();
+            std::cerr << ss.str();
+            throw new std::runtime_error(ss.str());
+        }
+        int matchsize;
+        is >> matchsize;
+        for (int j=0 ; j<matchsize ; ++j) {
+            int matchid;
+            is >> matchid;
+            node->matches.push_back(cppauto->nodes[matchid]);
+        }
     }
     cppauto->root = cppauto->nodes[0];
+
+    cppauto->remove_duplicate_matches();
     return cppauto;
 }
 

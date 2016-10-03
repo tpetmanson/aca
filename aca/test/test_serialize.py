@@ -203,6 +203,7 @@ def test_names():
     auto_matches = [(m.start, m. end) for m in auto.get_matches(TEXT)]
 
     with TemporaryDirectory() as tmpdir:
+        #tmpdir = ''
         fnm = os.path.join(tmpdir, 'test.aca')
         auto.save_to_file(fnm)
         auto2 = Automaton()
