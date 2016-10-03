@@ -26,3 +26,16 @@ def test_with_updating():
     auto.add('us')
     matches = auto.get_matches('ushers')
     assert len(matches) == 2
+
+
+def test_with_words():
+    auto = Automaton()
+    auto.add(['funderbeam'])
+    auto.add(['mattermark'])
+    auto.add(['500', 'startups'])
+
+    txt = 'funderbeam and mattermark along with 500 startups'.split()
+    expected = [Match(0, 1, 'Y'), Match(2, 3, 'Y'), Match(5, 7, 'Y')]
+    actual = auto.get_matches(txt)
+    assert expected == actual
+

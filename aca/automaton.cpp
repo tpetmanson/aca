@@ -35,7 +35,7 @@ CppAutomaton::CppAutomaton() : uptodate(false) {
 }
 
 void CppAutomaton::add(const StringVector& pattern, const std::string& value) {
-    #ifdef AC_DEBUG
+    #ifdef ACA_DEBUG
         std::cout << "adding pattern with value <" << value << "> where pattern is ";
         for (const std::string& s : pattern) {
             std::cout << s << " ";
@@ -104,7 +104,7 @@ NodePtr CppAutomaton::goto_node(const int node_id, const std::string& elem) {
 }
 
 void CppAutomaton::update_automaton() {
-    #ifdef AC_DEBUG
+    #ifdef ACA_DEBUG
         std::cout << "updating automaton\n";
     #endif
     IntVector fail_table(nodes.size(), 0);
@@ -116,12 +116,12 @@ void CppAutomaton::update_automaton() {
     while (Q.size() > 0) {
         int node_id = Q[0]; Q.pop_front();
         NodePtr node = nodes[node_id];
-        #ifdef AC_DEBUG
+        #ifdef ACA_DEBUG
             std::cout << "processing node " << node_id << " value " << node->value << "\n";
         #endif
         for (auto iter=node->outs.begin() ; iter != node->outs.end() ; ++iter) {
             auto dest_node = iter->second;
-            #ifdef AC_DEBUG
+            #ifdef ACA_DEBUG
                 std::cout << "    dest node id " << dest_node->node_id << " with key " << iter->first << "\n";
             #endif
             Q.push_back(dest_node->node_id);
@@ -134,7 +134,7 @@ void CppAutomaton::update_automaton() {
             NodePtr fail_node = nodes[fail_table[dest_node->node_id]];
             dest_node->matches.reserve(dest_node->matches.size() + fail_node->matches.size());
             std::copy(fail_node->matches.begin(), fail_node->matches.end(), std::back_inserter(dest_node->matches));
-            #ifdef AC_DEBUG
+            #ifdef ACA_DEBUG
                 std::cout << "    dest node has " << dest_node->matches.size() << " matches\n";
             #endif
         }
@@ -156,13 +156,13 @@ MatchVector CppAutomaton::get_matches(const StringVector& text, const bool exclu
         }
         NodePtr node = goto_node(node_id, text[idx]);
         node_id = node->node_id;
-        #ifdef AC_DEBUG
+        #ifdef ACA_DEBUG
             std::cout << "matching pos " << idx << " " << text[idx] << " with node " << node->node_id << " value " << node->value << "\n";
         #endif
         if (node->value != "") {
             for (NodePtr resnode : node->matches) {
                 matches.push_back(CppMatch(idx - resnode->depth, idx+1, resnode->value));
-                #ifdef AC_DEBUG
+                #ifdef ACA_DEBUG
                     std::cout << "  " << matches[matches.size()-1].str() << "\n";
                 #endif
             }
@@ -290,19 +290,19 @@ CppAutomaton* CppAutomaton::deserialize_from_stream(std::istream& is) {
     for (int i=0 ; i<cppauto->fail_table.size() ; ++i) {
         is >> cppauto->fail_table[i];
     }
-    #ifdef AC_DEBUG
+    #ifdef ACA_DEBUG
         std::cout << "Fail table size is " << cppauto->fail_table.size() << "\n";
         std::cout.flush();
     #endif
 
     // create nodes
     for (int i=0 ; i<nnodes ; ++i) {
-        #ifdef AC_DEBUG
+        #ifdef ACA_DEBUG
             std::cout << "Creating node " << i << "\n"; std::cout.flush();
         #endif
         cppauto->nodes.push_back(std::make_shared<CppNode>(0, 0));
     }
-    #ifdef AC_DEBUG
+    #ifdef ACA_DEBUG
         std::cout << "Nodes created!\n;"; std::cout.flush();
     #endif
     // prepare reading node
@@ -317,7 +317,7 @@ CppAutomaton* CppAutomaton::deserialize_from_stream(std::istream& is) {
         }
         is.get(); // eat space char
         std::getline(is, node->value, '\0');
-        #ifdef AC_DEBUG
+        #ifdef ACA_DEBUG
             std::cout << "Read node " << node->node_id << "\n"; std::cout.flush();
         #endif
         for (int j=0 ; j<outsize ; ++j) {

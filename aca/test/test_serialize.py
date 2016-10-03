@@ -200,6 +200,7 @@ def test_names():
     auto = Automaton()
     auto.add_all(NAMES)
     auto.update_automaton()
+    auto_matches = [(m.start, m. end) for m in auto.get_matches(TEXT)]
 
     with TemporaryDirectory() as tmpdir:
         fnm = os.path.join(tmpdir, 'test.aca')
@@ -207,11 +208,16 @@ def test_names():
         auto2 = Automaton()
         auto2.load_from_file(fnm)
 
+    auto2_matches = [(m.start, m. end) for m in auto2.get_matches(TEXT)]
     assert list(auto.items()) == list(auto2.items())
     assert list(auto.prefixes()) == list(auto2.prefixes())
+    assert auto_matches == auto2_matches
 
     auto3 = Automaton()
     auto3.load_from_string(auto2.save_to_string())
+    auto3_matches = [(m.start, m. end) for m in auto3.get_matches(TEXT)]
 
     assert list(auto.items()) == list(auto2.items())
     assert list(auto.prefixes()) == list(auto2.prefixes())
+    assert auto_matches == auto3_matches
+

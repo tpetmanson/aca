@@ -122,7 +122,7 @@ MatchVector cpp_remove_overlaps(MatchVector matches) {
             highpos = i;
         }
     }
-    #ifdef AC_DEBUG
+    #ifdef ACA_DEBUG
         std::cout << "matches:";
         for (int i=0 ; i<matches.size() ; ++i) {
             std::cout << " [" << i << "]=" << matches[i].str();
@@ -150,7 +150,7 @@ MatchVector cpp_remove_overlaps(MatchVector matches) {
         keep.push_back(highpos);
         highpos = prev[highpos];
     }
-    #ifdef AC_DEBUG
+    #ifdef ACA_DEBUG
         std::cout << "keep:";
         for (int i=0 ; i<keep.size() ; ++i) {
             std::cout << " [" << i << "]=" << keep[i];

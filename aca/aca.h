@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef AC__AC_H
 #define AC__AC_H
 // use this line to print debugging information from C++ code
-//#define AC_DEBUG    1
+#define ACA_DEBUG    1
 #define BEGIN_NAMESPACE(x)  namespace x {
 #define END_NAMESPACE }
 
