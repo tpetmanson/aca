@@ -183,6 +183,13 @@ MatchVector CppAutomaton::get_matches(const StringVector& text, const bool exclu
             }
         }
     }
+    // sort the matches
+    std::sort(matches.begin(), matches.end(), [](const CppMatch& a, const CppMatch& b) {
+        if (a.get_start() == b.get_start()) {
+            return a.get_end() < b.get_end();
+        }
+        return a.get_start() < b.get_start();
+    });
     if (exclude_overlaps) {
         return cpp_remove_overlaps(matches);
     }

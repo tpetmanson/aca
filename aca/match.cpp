@@ -77,13 +77,12 @@ MatchVector cpp_remove_overlaps(MatchVector matches) {
     if (matches.size() == 0) {
         return matches;
     }
-    // sort the matches
-    std::sort(matches.begin(), matches.end(), [](const CppMatch& a, const CppMatch& b) {
-        if (a.get_start() == b.get_start()) {
-            return a.get_end() < b.get_end();
+    #ifdef ACA_DEBUG
+        std::cout << "matches before removing overlaps:\n";
+        for (int i=0 ; i<matches.size() ; ++i) {
+            std::cout << matches[i].str() << " ";
         }
-        return a.get_start() < b.get_start();
-    });
+    #endif
     // compute the lengths
     IntVector lengths(matches.size(), 0);
     std::transform(matches.begin(), matches.end(), lengths.begin(), [](const CppMatch& m) {
