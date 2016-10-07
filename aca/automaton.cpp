@@ -172,14 +172,21 @@ MatchVector CppAutomaton::get_matches(const StringVector& text, const bool exclu
         NodePtr node = goto_node(node_id, text[idx]);
         node_id = node->node_id;
         #ifdef ACA_DEBUG
-            std::cout << "matching pos " << idx << " " << text[idx] << " with node " << node->node_id << " value " << node->value << "\n";
+            std::cout << "matching pos " << idx << " " << text[idx] << " with node " << node->node_id << " value " << node->value << std::endl;
         #endif
         if (node->value != "") {
             for (NodePtr resnode : node->matches) {
-                matches.push_back(CppMatch(idx - resnode->depth, idx+1, resnode->value));
-                #ifdef ACA_DEBUG
-                    std::cout << "  " << matches[matches.size()-1].str() << "\n";
-                #endif
+                const int start = idx - resnode->depth;
+                const int end = idx + 1;
+                if (start < end) {
+                    #ifdef ACA_DEBUG
+                        std::cout << "adding match " << start << " " << end << std::endl;
+                    #endif
+                    matches.push_back(CppMatch(start, end, resnode->get_value()));
+                    #ifdef ACA_DEBUG
+                        std::cout << "  " << matches[matches.size()-1].str() << std::endl;
+                    #endif
+                }
             }
         }
     }
