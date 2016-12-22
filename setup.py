@@ -6,7 +6,7 @@ from distutils.command.sdist import sdist as _sdist
 from setuptools import find_packages
 
 NAME = "aca"
-VERSION = '0.7'
+VERSION = '0.8'
 DESCRIPTION = 'Aho-Corasick automaton implementation in C++'
 AUTHOR = 'Timo Petmanson @Funderbeam'
 AUTHOR_EMAIL = 'tpetmanson@gmail.com'
@@ -23,7 +23,7 @@ CLASSIFIERS = [
 
 
 REQUIREMENTS = [
-    'Cython>=0.24.1,<0.25',
+    'Cython>=0.25.0,<0.26',
     'wheel>0.25.0',
     'six',
     'pytest']

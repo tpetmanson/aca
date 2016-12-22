@@ -306,10 +306,15 @@ Berlin
 ```
 pip install wheel
 pip install cython
-pip install ac
+pip install aca
 ```
 
+## Development
 
+For write / test cycles, use the following command to build the code in the project folder.
+```
+python setup.py build_ext --inplace
+```
 
 ### Debugging
 
