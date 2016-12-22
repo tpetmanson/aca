@@ -309,11 +309,18 @@ pip install cython
 pip install aca
 ```
 
-## Development
+### Development
 
 For write / test cycles, use the following command to build the code in the project folder.
 ```
 python setup.py build_ext --inplace
+```
+
+### Distributing the library
+
+```
+python setup.py build
+python setup.py sdist bdist_wheel upload
 ```
 
 ### Debugging
