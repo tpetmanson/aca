@@ -7,6 +7,7 @@ This package is a C++ implementation of the Aho-Corasick automaton and wrapped i
 * dictionary matching with linear O(n) complexity 
 * efficient String -> String dictionary
 * serialization
+* functionality for removing overlaps while maximizing the number of matched tokens
 
 Please refer to examples below for more details.
 
