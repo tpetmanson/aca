@@ -1,5 +1,7 @@
 # Aho–Corasick automaton + keyword tree implementation for Python
 
+By Timo Petmanson @ Funderbeam ( https://funderbeam.com )
+
 This package is a C++ implementation of the Aho-Corasick automaton and wrapped in Python with the following features:
 
 * dictionary matching with linear O(n) complexity 
@@ -7,6 +9,7 @@ This package is a C++ implementation of the Aho-Corasick automaton and wrapped i
 * serialization
 
 Please refer to examples below for more details.
+
 
 ## The data structure
 
@@ -24,6 +27,9 @@ When the string dictionary is known in advance (e.g. a computer virus database),
 In this case, its run time is linear in the length of the input plus the number of matched entries.
 
 See https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm for more information.
+
+See https://github.com/tpetmanson/aca/blob/master/docs/slides04.pdf to learn more about how AC automatons work.
+
 
 ## Example usage
 
