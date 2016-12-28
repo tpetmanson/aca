@@ -5,8 +5,16 @@ from Cython.Build import cythonize
 from distutils.command.sdist import sdist as _sdist
 from setuptools import find_packages
 
+# this is for making the package documentation look nice on PyPi
+try:
+    import pypandoc
+    LONG_DESCRIPTION = pypandoc.convert('README.md', 'rst')
+except(IOError, ImportError):
+    LONG_DESCRIPTION = open('README.md').read()
+
+
 NAME = "aca"
-VERSION = '0.8'
+VERSION = '0.9'
 DESCRIPTION = 'Aho-Corasick automaton implementation in C++'
 AUTHOR = 'Timo Petmanson @Funderbeam'
 AUTHOR_EMAIL = 'tpetmanson@gmail.com'
@@ -49,6 +57,7 @@ setup(
     name=NAME,
     version=VERSION,
     description=DESCRIPTION,
+    long_description=LONG_DESCRIPTION,
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
     url=URL,
