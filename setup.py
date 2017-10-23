@@ -10,7 +10,7 @@ try:
     import pypandoc
     LONG_DESCRIPTION = pypandoc.convert('README.md', 'rst')
 except(IOError, ImportError):
-    LONG_DESCRIPTION = open('README.md').read()
+    LONG_DESCRIPTION = open('README.md', encoding='utf-8').read()
 
 
 NAME = "aca"
