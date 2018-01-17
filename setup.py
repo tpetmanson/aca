@@ -14,7 +14,7 @@ except(IOError, ImportError):
 
 
 NAME = "aca"
-VERSION = '0.9'
+VERSION = '1.0'
 DESCRIPTION = 'Aho-Corasick automaton implementation in C++'
 AUTHOR = 'Timo Petmanson @Funderbeam'
 AUTHOR_EMAIL = 'tpetmanson@gmail.com'
@@ -26,13 +26,14 @@ CLASSIFIERS = [
     'Topic :: Text Processing',
     'Topic :: Text Processing :: Linguistic',
     'Programming Language :: Python :: 3.4',
-    'Programming Language :: Python :: 3.5'
+    'Programming Language :: Python :: 3.5',
+    'Programming Language :: Python :: 3.6'
 ]
 
 
 REQUIREMENTS = [
-    'Cython>=0.25.0,<0.26',
-    'wheel>0.25.0',
+    'Cython',
+    'wheel',
     'six',
     'pytest']
 
