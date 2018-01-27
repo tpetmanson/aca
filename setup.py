@@ -1,5 +1,6 @@
 import setuptools
 import platform
+import codecs
 from distutils.core import setup, Extension
 from Cython.Build import cythonize
 from distutils.command.sdist import sdist as _sdist
@@ -10,11 +11,11 @@ try:
     import pypandoc
     LONG_DESCRIPTION = pypandoc.convert('README.md', 'rst')
 except(IOError, ImportError):
-    LONG_DESCRIPTION = open('README.md', encoding='utf-8').read()
+    LONG_DESCRIPTION = codecs.open('README.md', encoding='utf-8').read()
 
 
 NAME = "aca"
-VERSION = '1.0'
+VERSION = '1.1'
 DESCRIPTION = 'Aho-Corasick automaton implementation in C++'
 AUTHOR = 'Timo Petmanson @Funderbeam'
 AUTHOR_EMAIL = 'tpetmanson@gmail.com'
